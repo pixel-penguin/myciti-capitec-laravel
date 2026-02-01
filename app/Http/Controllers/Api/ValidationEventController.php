@@ -43,6 +43,9 @@ class ValidationEventController extends Controller
         if ($ticket->ticket_date->toDateString() !== now()->toDateString()) {
             $eventType = 'decline';
             $declineReason = 'invalid_date';
+        } elseif ($eventType === 'pass' && ! $this->isWithinSchedule($ticket->schedule, $scannedAt)) {
+            $eventType = 'decline';
+            $declineReason = 'outside_schedule';
         } elseif ($eventType === 'alight' && $ticket->status !== 'used') {
             $eventType = 'decline';
             $declineReason = 'not_boarded';
@@ -76,5 +79,24 @@ class ValidationEventController extends Controller
             'status' => $eventType === 'decline' ? 'declined' : 'ok',
             'event_id' => $event->id,
         ]);
+    }
+
+    private function isWithinSchedule(?\App\Models\Schedule $schedule, \Carbon\Carbon $timestamp): bool
+    {
+        if (! $schedule) {
+            return false;
+        }
+
+        $startsTime = is_string($schedule->starts_at) ? $schedule->starts_at : $schedule->starts_at->format('H:i:s');
+        $endsTime = is_string($schedule->ends_at) ? $schedule->ends_at : $schedule->ends_at->format('H:i:s');
+
+        $windowStart = $timestamp->copy()->setTimeFromTimeString($startsTime);
+        $windowEnd = $timestamp->copy()->setTimeFromTimeString($endsTime);
+
+        if ($windowEnd->lessThan($windowStart)) {
+            $windowEnd->addDay();
+        }
+
+        return $timestamp->betweenIncluded($windowStart, $windowEnd);
     }
 }
