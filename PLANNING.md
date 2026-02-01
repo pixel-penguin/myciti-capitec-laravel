@@ -13,7 +13,7 @@
 - [x] Access request workflow (submit/approve/decline) + notifications + audit logging
 - [x] OTP registration flow + email verification (employee onboarding)
 - [x] Admin UI for Capitec (eligibility, access requests, schedules)
-- [ ] City reporting UI (read-only, anonymized)
+- [x] City reporting UI (read-only, anonymized)
 - [ ] Reporting exports (CSV/PDF) + export audit
 - [ ] Validator auth (device/API key) + stricter pass/decline reasoning
 - [ ] Schedule/config management UI
