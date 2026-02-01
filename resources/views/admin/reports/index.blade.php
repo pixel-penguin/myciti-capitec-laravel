@@ -70,6 +70,22 @@
                     </table>
                 </div>
             </div>
+
+            <div class="bg-white shadow sm:rounded-lg p-6">
+                <h3 class="text-lg font-semibold mb-4">Export Reports</h3>
+                <div class="flex flex-wrap gap-4">
+                    <form method="POST" action="{{ route('admin.reports.export') }}">
+                        @csrf
+                        <input type="hidden" name="type" value="validation">
+                        <button class="px-4 py-2 bg-slate-900 text-white rounded">Export Validation CSV</button>
+                    </form>
+                    <form method="POST" action="{{ route('admin.reports.export') }}">
+                        @csrf
+                        <input type="hidden" name="type" value="tracking">
+                        <button class="px-4 py-2 bg-slate-900 text-white rounded">Export Tracking CSV</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

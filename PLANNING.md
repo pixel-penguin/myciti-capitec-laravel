@@ -14,7 +14,7 @@
 - [x] OTP registration flow + email verification (employee onboarding)
 - [x] Admin UI for Capitec (eligibility, access requests, schedules)
 - [x] City reporting UI (read-only, anonymized)
-- [ ] Reporting exports (CSV/PDF) + export audit
+- [x] Reporting exports (CSV/PDF) + export audit
 - [ ] Validator auth (device/API key) + stricter pass/decline reasoning
 - [ ] Schedule/config management UI
 - [ ] Tracking feed ingestion + map data endpoint

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\EmployeeEligibilityController;
 use App\Http\Controllers\Admin\AccessRequestController as AdminAccessRequestController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\ReportingController;
+use App\Http\Controllers\Admin\ReportExportController;
 use App\Http\Controllers\TrackingController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:capitec_admin|city_reporter'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/reports', [ReportingController::class, 'index'])->name('admin.reports.index');
+    Route::post('/admin/reports/export', [ReportExportController::class, 'export'])->name('admin.reports.export');
 });
 
 Route::middleware(['auth', 'role:capitec_admin'])->group(function () {
