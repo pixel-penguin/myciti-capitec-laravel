@@ -1,0 +1,428 @@
+{
+  "info": {
+    "_postman_id": "4671a7c0-8eb3-4696-a8a3-7bf2f7842939",
+    "name": "Frotcom API - AFTECH",
+    "description": "API collection for Frotcom vehicle tracking system with AFTECH credentials",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9131579",
+    "_collection_link": "https://go.postman.co/collection/9131579-4671a7c0-8eb3-4696-a8a3-7bf2f7842939?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Authorization",
+      "item": [
+        {
+          "name": "Get Auth Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Save the token to collection variable",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.token) {",
+                  "        pm.collectionVariables.set('api_key', jsonData.token);",
+                  "        console.log('Token saved:', jsonData.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"provider\": \"thirdparty\",\n    \"username\": \"yWwcDFobpGe29fW\",\n    \"password\": \"LoTiyW7AHP8Ar5V8xYutGADEufVC\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v2/authorize",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "authorize"
+              ]
+            },
+            "description": "Authenticate with Frotcom API and retrieve access token. The token will be automatically saved to the collection variable 'api_key' for use in subsequent requests."
+          },
+          "response": [
+            {
+              "name": "Get Auth Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"provider\": \"thirdparty\",\n    \"username\": \"yWwcDFobpGe29fW\",\n    \"password\": \"LoTiyW7AHP8Ar5V8xYutGADEufVC\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/v2/authorize",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "authorize"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Length",
+                  "value": "91"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Sun, 01 Feb 2026 09:45:09 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Microsoft-IIS/10.0"
+                },
+                {
+                  "key": "Access-Control-Expose-Headers",
+                  "value": "Request-Context"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "-1"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "X-AspNet-Version",
+                  "value": "4.0.30319"
+                },
+                {
+                  "key": "Request-Context",
+                  "value": "appId=cid-v1:6958f060-2a89-486d-b533-68e2533a833a"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "ASP.NET"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"token\": \"34b605ee-b978-46c2-bab4-364842da3f85\",\n    \"provider\": \"thirdparty\",\n    \"announcements\": []\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Authentication endpoints for Frotcom API"
+    },
+    {
+      "name": "2. Vehicles",
+      "item": [
+        {
+          "name": "Get All Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v2/vehicles?api_key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "vehicles"
+              ],
+              "query": [
+                {
+                  "key": "api_key",
+                  "value": "{{api_key}}",
+                  "description": "API authentication token"
+                }
+              ]
+            },
+            "description": "Returns all vehicles currently associated with the AFTECH account. The 'id' field from this response corresponds to the 'loadUnitId' used in tracking endpoints."
+          },
+          "response": [
+            {
+              "name": "Get All Vehicles",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/v2/vehicles?api_key=34b605ee-b978-46c2-bab4-364842da3f85",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "vehicles"
+                  ],
+                  "query": [
+                    {
+                      "key": "api_key",
+                      "value": "34b605ee-b978-46c2-bab4-364842da3f85",
+                      "description": "API authentication token"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Length",
+                  "value": "3531"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Sun, 01 Feb 2026 09:45:53 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Microsoft-IIS/10.0"
+                },
+                {
+                  "key": "Access-Control-Expose-Headers",
+                  "value": "Request-Context"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Expires",
+                  "value": "-1"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "X-Endpoint-RateLimit-Limit",
+                  "value": "1125"
+                },
+                {
+                  "key": "X-Endpoint-RateLimit-Remaining",
+                  "value": "1124"
+                },
+                {
+                  "key": "X-Endpoint-RateLimit-Reset",
+                  "value": "1769940053"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "1125"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "1123"
+                },
+                {
+                  "key": "X-RateLimit-Reset",
+                  "value": "1769940053"
+                },
+                {
+                  "key": "X-AspNet-Version",
+                  "value": "4.0.30319"
+                },
+                {
+                  "key": "Request-Context",
+                  "value": "appId=cid-v1:6958f060-2a89-486d-b533-68e2533a833a"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "ASP.NET"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n    {\n        \"terminals\": [],\n        \"id\": 126106,\n        \"kind\": \"V\",\n        \"typeId\": 10422,\n        \"typeName\": \"SN OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"AA700AS(GV65)\",\n        \"stopDuration\": 76398,\n        \"latitude\": 14.731319,\n        \"longitude\": -17.288937,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"immobilizer\": 0,\n        \"icon\": 2,\n        \"otherIcon\": 2,\n        \"odometerGps\": 189307.52299999708,\n        \"imei\": \"863286023809057\",\n        \"lastCommunication\": \"2026-02-01T09:27:45\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"DACIA\",\n        \"model\": \" DUSTER\",\n        \"chronometer\": 3093.0980555580259,\n        \"placeId\": 0,\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 11.764705882352942,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:27:45\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 165644,\n        \"kind\": \"V\",\n        \"typeId\": 10422,\n        \"typeName\": \"SN OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"AA700AS\",\n        \"driverId\": 214024,\n        \"driverName\": \"ABDOULAYE\",\n        \"stopDuration\": 76403,\n        \"latitude\": 14.731340000000001,\n        \"longitude\": -17.288970000000003,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"icon\": 2,\n        \"otherIcon\": 2,\n        \"odometerGps\": 193405.53999999122,\n        \"imei\": \"868789024610148\",\n        \"lastCommunication\": \"2026-02-01T09:29:24\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"RENAULT\",\n        \"model\": \"DUSTER\",\n        \"chronometer\": 2763.3389888938805,\n        \"placeId\": 0,\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"odometerOk\": false,\n        \"totalFuelOk\": false,\n        \"engineHoursOk\": false,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:29:24\",\n        \"noGps\": 0.0019193857970000172,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 184916,\n        \"kind\": \"V\",\n        \"typeId\": 10423,\n        \"typeName\": \"GN OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"AP 287\",\n        \"driverId\": 214685,\n        \"driverName\": \"MOHAMED\",\n        \"stopDuration\": 68584,\n        \"latitude\": 9.6326349999999987,\n        \"longitude\": -13.627740999999999,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"immobilizer\": 0,\n        \"icon\": 1,\n        \"otherIcon\": 2,\n        \"odometerGps\": 155153.25600000049,\n        \"imei\": \"867488065185992\",\n        \"lastCommunication\": \"2026-02-01T09:36:57\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"RENAULT\",\n        \"model\": \"DUSTER\",\n        \"chronometer\": 1405.4744444444132,\n        \"placeId\": 0,\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:36:57\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 204220,\n        \"kind\": \"V\",\n        \"typeId\": 10422,\n        \"typeName\": \"SN OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"AA 995 FQ\",\n        \"field1\": \"AA 995 FQ\",\n        \"driverId\": 214021,\n        \"driverName\": \"AMADOU\",\n        \"stopDuration\": 48215,\n        \"latitude\": 14.737520000000002,\n        \"longitude\": -17.295170000000002,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"immobilizer\": 2,\n        \"icon\": 2,\n        \"otherIcon\": 2,\n        \"odometerGps\": 35087.180999998345,\n        \"imei\": \"865677040321035\",\n        \"lastCommunication\": \"2026-02-01T09:40:28\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"hasImmobilizer\": true,\n        \"manufacturer\": \"SUZUKI\",\n        \"model\": \"ESPRESO\",\n        \"chronometer\": 2497.5118749995972,\n        \"placeId\": 0,\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"ecoProfileId\": 2,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:40:28\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 204231,\n        \"kind\": \"V\",\n        \"typeId\": 10422,\n        \"typeName\": \"SN OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"AA 998 FQ\",\n        \"field1\": \"AA 998 FQ\",\n        \"driverId\": 214025,\n        \"driverName\": \"BOUBACAR\",\n        \"stopDuration\": 80,\n        \"latitude\": 14.679810000000002,\n        \"longitude\": -17.450870000000002,\n        \"direction\": -1,\n        \"speed\": 0,\n        \"immobilizer\": 2,\n        \"icon\": 2,\n        \"otherIcon\": 2,\n        \"odometerGps\": 43065.999999998974,\n        \"imei\": \"868789028060852\",\n        \"lastCommunication\": \"2026-02-01T09:44:53\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"hasImmobilizer\": true,\n        \"manufacturer\": \"SUZUKI\",\n        \"model\": \"ESPRESO\",\n        \"chronometer\": 3085.8955611107563,\n        \"placeId\": 1912970,\n        \"placeName\": \"Boubacars house\",\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:44:53\",\n        \"noGps\": 0.00080321285200002368,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 204260,\n        \"kind\": \"V\",\n        \"typeId\": 10422,\n        \"typeName\": \"SN OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"AA 647 FJ\",\n        \"stopDuration\": 143288,\n        \"latitude\": 14.761680000000002,\n        \"longitude\": -17.48029,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"icon\": 2,\n        \"otherIcon\": 2,\n        \"odometerGps\": 119179.13199999987,\n        \"imei\": \"865677040327115\",\n        \"lastCommunication\": \"2026-02-01T09:37:35\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"RENAULT\",\n        \"model\": \"DUSTER\",\n        \"chronometer\": 1524.1341694444748,\n        \"placeId\": 1912972,\n        \"placeName\": \"Amadous house\",\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:37:35\",\n        \"noGps\": 0.0047169811330000089,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 209668,\n        \"kind\": \"V\",\n        \"typeId\": 10424,\n        \"typeName\": \"LR OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"A45590\",\n        \"driverId\": 330626,\n        \"driverName\": \"PATRICK\",\n        \"latitude\": 6.39268,\n        \"longitude\": -10.782850000000002,\n        \"direction\": 164.01,\n        \"speed\": 36,\n        \"immobilizer\": 1,\n        \"icon\": 1,\n        \"otherIcon\": 34,\n        \"odometerGps\": 7666.0940000002156,\n        \"imei\": \"865677041193862\",\n        \"lastCommunication\": \"2026-02-01T09:45:16\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": true,\n        \"stopSpeedLimit\": 5,\n        \"hasImmobilizer\": false,\n        \"manufacturer\": \"RENAULT\",\n        \"model\": \"DUSTER\",\n        \"chronometer\": 559.1267166665325,\n        \"placeId\": 0,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:45:16\",\n        \"noGps\": 0.004640371230000051,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 209745,\n        \"kind\": \"V\",\n        \"typeId\": 10424,\n        \"typeName\": \"LR OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"A46050\",\n        \"driverId\": 374055,\n        \"driverName\": \"ALBERT NEW CARD\",\n        \"stopDuration\": 2999613,\n        \"latitude\": 6.272175,\n        \"longitude\": -10.695635,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"immobilizer\": 0,\n        \"icon\": 1,\n        \"otherIcon\": 2,\n        \"odometerGps\": 25247.464999999473,\n        \"imei\": \"353201356379096\",\n        \"lastCommunication\": \"2025-12-28T16:53:07\",\n        \"communicationStatus\": 3,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"RENAULT\",\n        \"model\": \"DUSTER\",\n        \"chronometer\": 2260.4584777800533,\n        \"placeId\": 0,\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2025-12-28T16:53:07\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 231120,\n        \"kind\": \"V\",\n        \"typeId\": 10426,\n        \"typeName\": \"CI OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"2127LE01\",\n        \"field1\": \"2127LE01\",\n        \"driverId\": 296963,\n        \"driverName\": \"FRANCK\",\n        \"stopDuration\": 143392,\n        \"latitude\": 5.4875700000000007,\n        \"longitude\": -4.0412,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"immobilizer\": 2,\n        \"icon\": 1,\n        \"otherIcon\": 2,\n        \"odometerGps\": 55132.924999997093,\n        \"imei\": \"865677041317727\",\n        \"lastCommunication\": \"2026-02-01T09:44:54\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"hasImmobilizer\": true,\n        \"manufacturer\": \"SUZUKI\",\n        \"model\": \"Alto\",\n        \"chronometer\": 3009.1483416702849,\n        \"placeId\": 2192426,\n        \"placeName\": \"FRANCKS HOUSE\",\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:44:54\",\n        \"noGps\": 0.0010964912290000184,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 231535,\n        \"kind\": \"V\",\n        \"hasSensor3\": true,\n        \"typeId\": 10426,\n        \"typeName\": \"CI OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"2131LE01\",\n        \"field1\": \"2131LE01\",\n        \"driverId\": 228216,\n        \"driverName\": \"SINALY\",\n        \"stopDuration\": 142374,\n        \"latitude\": 5.4453000000000005,\n        \"longitude\": -4.01714,\n        \"direction\": -1,\n        \"speed\": 0,\n        \"immobilizer\": 0,\n        \"icon\": 1,\n        \"otherIcon\": 2,\n        \"odometerGps\": 34077.478999999621,\n        \"imei\": \"868789027760684\",\n        \"lastCommunication\": \"2026-01-30T18:13:45\",\n        \"communicationStatus\": 3,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"SUZUKI\",\n        \"model\": \"Alto\",\n        \"chronometer\": 3223.3680611129948,\n        \"placeId\": 1998047,\n        \"placeName\": \"sinaly house\",\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"ecoProfileId\": 2,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-01-30T18:13:45\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 293434,\n        \"kind\": \"V\",\n        \"hasCanbus\": true,\n        \"typeId\": 10425,\n        \"typeName\": \"SL OFFICE \",\n        \"classId\": 3,\n        \"className\": \"[VC_Pickup]\",\n        \"licensePlate\": \"AVT483\",\n        \"driverId\": 295148,\n        \"driverName\": \"DONALD\",\n        \"latitude\": 7.7648433,\n        \"longitude\": -12.2959516,\n        \"direction\": 35,\n        \"speed\": 13,\n        \"immobilizer\": 0,\n        \"icon\": 1,\n        \"otherIcon\": 25,\n        \"odometerGps\": 81138.975999999238,\n        \"odometerCanbus\": 80765,\n        \"imei\": \"350612075254860\",\n        \"lastCommunication\": \"2026-02-01T09:45:43\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": true,\n        \"stopSpeedLimit\": 5,\n        \"fuelManagement\": true,\n        \"manufacturer\": \"MITSIBISHI\",\n        \"model\": \"L200\",\n        \"chronometer\": 3961.0906416771008,\n        \"placeId\": 2157275,\n        \"placeName\": \"SRL\",\n        \"useCanbusMileage\": true,\n        \"fuelConsumption\": 2,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"hasTotalFuelUsedHighRes\": true,\n        \"canBusTotalFuelUsed\": 6968.9000000000005,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:45:43\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 297719,\n        \"kind\": \"V\",\n        \"typeId\": 13554,\n        \"typeName\": \"ZM OFFICE\",\n        \"classId\": 3,\n        \"className\": \"[VC_Pickup]\",\n        \"licensePlate\": \"CAA663681\",\n        \"driverId\": 420931,\n        \"driverName\": \"FOTON\",\n        \"stopDuration\": 18,\n        \"latitude\": -12.9747499,\n        \"longitude\": 28.641565,\n        \"direction\": 303,\n        \"speed\": 0,\n        \"icon\": 1,\n        \"otherIcon\": 35,\n        \"odometerGps\": 9370.7379999999957,\n        \"imei\": \"860896052686318\",\n        \"lastCommunication\": \"2026-02-01T09:45:35\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"FOTON\",\n        \"model\": \"G7\",\n        \"chronometer\": 243.5369611111951,\n        \"placeId\": 0,\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:45:35\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 297861,\n        \"kind\": \"V\",\n        \"typeId\": 10427,\n        \"typeName\": \"ZA OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"CAA473156(C.D)\",\n        \"field1\": \"MBHCZC63S00B47309\",\n        \"driverId\": 295773,\n        \"driverName\": \"COLIN\",\n        \"latitude\": -33.9223866,\n        \"longitude\": 18.419995,\n        \"direction\": 324,\n        \"speed\": 6,\n        \"icon\": 1,\n        \"otherIcon\": 2,\n        \"odometerGps\": 50398.072999991527,\n        \"imei\": \"863719060175784\",\n        \"lastCommunication\": \"2026-02-01T09:45:19\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": true,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"SUZUKI\",\n        \"model\": \"SWIFT\",\n        \"chronometer\": 1238.4594222208686,\n        \"placeId\": 0,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:45:19\",\n        \"noGps\": 0.0046783625740000057,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 297876,\n        \"kind\": \"V\",\n        \"typeId\": 10427,\n        \"typeName\": \"ZA OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"CAA614091(G.S)\",\n        \"field1\": \"MBHZCDESR00178977\",\n        \"driverId\": 375123,\n        \"driverName\": \"GILLIAN\",\n        \"stopDuration\": 35919,\n        \"latitude\": -33.4566183,\n        \"longitude\": 18.7212266,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"icon\": 1,\n        \"otherIcon\": 2,\n        \"odometerGps\": 10509.260000000444,\n        \"imei\": \"863719060040400\",\n        \"lastCommunication\": \"2026-02-01T09:31:31\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"manufacturer\": \"SUZUKI\",\n        \"model\": \"SWIFT\",\n        \"chronometer\": 304.54945277767274,\n        \"placeId\": 0,\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:31:31\",\n        \"noGps\": 0,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    },\n    {\n        \"terminals\": [],\n        \"id\": 315346,\n        \"kind\": \"V\",\n        \"typeId\": 10425,\n        \"typeName\": \"SL OFFICE \",\n        \"classId\": 2,\n        \"className\": \"[VC_Passenger]\",\n        \"licensePlate\": \"AQU445 \",\n        \"field1\": \"Imran\",\n        \"stopDuration\": 65166,\n        \"latitude\": 8.4477983,\n        \"longitude\": -13.2327933,\n        \"direction\": 0,\n        \"speed\": 0,\n        \"immobilizer\": 2,\n        \"icon\": 1,\n        \"otherIcon\": 34,\n        \"odometerGps\": 149490.87299999996,\n        \"imei\": \"352592572288041\",\n        \"lastCommunication\": \"2026-02-01T09:41:27\",\n        \"communicationStatus\": 1,\n        \"isOnTrip\": false,\n        \"stopSpeedLimit\": 5,\n        \"hasImmobilizer\": true,\n        \"manufacturer\": \"RENAULT\",\n        \"model\": \"DUSTER\",\n        \"chronometer\": 532.771316666639,\n        \"placeId\": 1912971,\n        \"placeName\": \"Imrans house\",\n        \"isStopped\": true,\n        \"useCanbusMileage\": false,\n        \"fuelConsumption\": 3,\n        \"fuel100Km\": 0,\n        \"fuelHour\": 0,\n        \"vehicleAssetType\": \"vehicleWithGPS\",\n        \"lastGps\": \"2026-02-01T09:41:27\",\n        \"noGps\": 0.051428571429000036,\n        \"tpmsConfig\": \"Model3\",\n        \"energyType\": \"internalCombustion\",\n        \"failures\": {}\n    }\n]"
+            }
+          ]
+        }
+      ],
+      "description": "Vehicle management endpoints"
+    },
+    {
+      "name": "3. Tracking",
+      "item": [
+        {
+          "name": "Get Latest Tracking Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v2/TrackingData/Latest?api_key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "TrackingData",
+                "Latest"
+              ],
+              "query": [
+                {
+                  "key": "api_key",
+                  "value": "{{api_key}}",
+                  "description": "API authentication token"
+                }
+              ]
+            },
+            "description": "Retrieves the latest tracking data for all vehicles. The loadUnitId in the response corresponds to the id field from the /v2/vehicles endpoint."
+          },
+          "response": [
+            {
+              "name": "Get Latest Tracking Data",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/v2/TrackingData/Latest?api_key=34b605ee-b978-46c2-bab4-364842da3f85",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "TrackingData",
+                    "Latest"
+                  ],
+                  "query": [
+                    {
+                      "key": "api_key",
+                      "value": "34b605ee-b978-46c2-bab4-364842da3f85",
+                      "description": "API authentication token"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Length",
+                  "value": "926"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Sun, 01 Feb 2026 09:45:38 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Microsoft-IIS/10.0"
+                },
+                {
+                  "key": "Access-Control-Expose-Headers",
+                  "value": "Request-Context"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Expires",
+                  "value": "-1"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "1125"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "1124"
+                },
+                {
+                  "key": "X-RateLimit-Reset",
+                  "value": "1769940038"
+                },
+                {
+                  "key": "X-AspNet-Version",
+                  "value": "4.0.30319"
+                },
+                {
+                  "key": "Request-Context",
+                  "value": "appId=cid-v1:6958f060-2a89-486d-b533-68e2533a833a"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "ASP.NET"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n    {\n        \"loadUnitId\": 126106,\n        \"timestamp\": \"2026-02-01T09:27:45\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -17.288937,\n            \"latitude\": 14.731319\n        }\n    },\n    {\n        \"loadUnitId\": 165644,\n        \"timestamp\": \"2026-02-01T09:29:24\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -17.288970000000003,\n            \"latitude\": 14.731340000000001\n        }\n    },\n    {\n        \"loadUnitId\": 184916,\n        \"timestamp\": \"2026-02-01T09:36:57\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -13.627740999999999,\n            \"latitude\": 9.6326349999999987\n        }\n    },\n    {\n        \"loadUnitId\": 185561,\n        \"timestamp\": \"2025-10-28T13:17:19\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": 18.48074,\n            \"latitude\": -33.807500000000005\n        }\n    },\n    {\n        \"loadUnitId\": 204220,\n        \"timestamp\": \"2026-02-01T09:40:28\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -17.295170000000002,\n            \"latitude\": 14.737520000000002\n        }\n    },\n    {\n        \"loadUnitId\": 204231,\n        \"timestamp\": \"2026-02-01T09:44:53\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -17.450870000000002,\n            \"latitude\": 14.679810000000002,\n            \"heading\": -1\n        }\n    },\n    {\n        \"loadUnitId\": 204260,\n        \"timestamp\": \"2026-02-01T09:37:35\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -17.48029,\n            \"latitude\": 14.761680000000002\n        }\n    },\n    {\n        \"loadUnitId\": 209668,\n        \"timestamp\": \"2026-02-01T09:45:16\",\n        \"position\": {\n            \"ignition\": true,\n            \"speed\": 36,\n            \"longitude\": -10.782850000000002,\n            \"latitude\": 6.39268,\n            \"heading\": 164.01\n        }\n    },\n    {\n        \"loadUnitId\": 209745,\n        \"timestamp\": \"2025-12-28T16:53:07\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -10.695635,\n            \"latitude\": 6.272175\n        }\n    },\n    {\n        \"loadUnitId\": 230932,\n        \"timestamp\": \"2025-08-01T12:51:57\",\n        \"position\": {\n            \"ignition\": true,\n            \"longitude\": 18.480790000000002,\n            \"latitude\": -33.807570000000005,\n            \"heading\": -1\n        }\n    },\n    {\n        \"loadUnitId\": 231120,\n        \"timestamp\": \"2026-02-01T09:44:54\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -4.0412,\n            \"latitude\": 5.4875700000000007\n        }\n    },\n    {\n        \"loadUnitId\": 231535,\n        \"timestamp\": \"2026-01-30T18:13:45\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -4.01714,\n            \"latitude\": 5.4453000000000005,\n            \"heading\": -1\n        }\n    },\n    {\n        \"loadUnitId\": 293434,\n        \"timestamp\": \"2026-02-01T09:44:43\",\n        \"position\": {\n            \"ignition\": true,\n            \"speed\": 19,\n            \"longitude\": -12.2956383,\n            \"latitude\": 7.7655533,\n            \"heading\": 253\n        }\n    },\n    {\n        \"loadUnitId\": 297716,\n        \"timestamp\": \"2025-12-04T08:04:19\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": 18.4807,\n            \"latitude\": -33.8074683\n        }\n    },\n    {\n        \"loadUnitId\": 297718,\n        \"timestamp\": \"2025-12-04T09:39:44\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": 18.4807433,\n            \"latitude\": -33.807395\n        }\n    },\n    {\n        \"loadUnitId\": 297719,\n        \"timestamp\": \"2026-02-01T09:44:54\",\n        \"position\": {\n            \"ignition\": true,\n            \"speed\": 6,\n            \"longitude\": 28.6420099,\n            \"latitude\": -12.975055,\n            \"heading\": 316\n        }\n    },\n    {\n        \"loadUnitId\": 297861,\n        \"timestamp\": \"2026-02-01T09:45:19\",\n        \"position\": {\n            \"ignition\": true,\n            \"speed\": 6,\n            \"longitude\": 18.419995,\n            \"latitude\": -33.9223866,\n            \"heading\": 324\n        }\n    },\n    {\n        \"loadUnitId\": 297876,\n        \"timestamp\": \"2026-02-01T09:31:31\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": 18.7212266,\n            \"latitude\": -33.4566183\n        }\n    },\n    {\n        \"loadUnitId\": 315346,\n        \"timestamp\": \"2026-02-01T09:41:27\",\n        \"position\": {\n            \"ignition\": false,\n            \"longitude\": -13.2327933,\n            \"latitude\": 8.4477983\n        }\n    }\n]"
+            }
+          ]
+        }
+      ],
+      "description": "Tracking data endpoints"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://v2api.frotcom.com",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
