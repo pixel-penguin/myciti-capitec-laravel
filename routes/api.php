@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\ValidationEventController;
+use App\Http\Controllers\AccessRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -9,3 +10,4 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/validation-events', [ValidationEventController::class, 'store']);
+Route::post('/access-requests', [AccessRequestController::class, 'store']);
