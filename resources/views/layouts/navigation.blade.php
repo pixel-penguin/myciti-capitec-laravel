@@ -12,9 +12,30 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @hasanyrole('capitec_admin|city_reporter')
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Admin Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">
+                            {{ __('Reports') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endhasanyrole
+
+                    @role('capitec_admin')
+                        <x-nav-link :href="route('admin.eligibility.index')" :active="request()->routeIs('admin.eligibility.*')">
+                            {{ __('Eligibility') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.access-requests.index')" :active="request()->routeIs('admin.access-requests.*')">
+                            {{ __('Access Requests') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.schedules.index')" :active="request()->routeIs('admin.schedules.*')">
+                            {{ __('Schedules') }}
+                        </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
@@ -67,9 +88,30 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @hasanyrole('capitec_admin|city_reporter')
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Admin Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">
+                    {{ __('Reports') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @endhasanyrole
+
+            @role('capitec_admin')
+                <x-responsive-nav-link :href="route('admin.eligibility.index')" :active="request()->routeIs('admin.eligibility.*')">
+                    {{ __('Eligibility') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.access-requests.index')" :active="request()->routeIs('admin.access-requests.*')">
+                    {{ __('Access Requests') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.schedules.index')" :active="request()->routeIs('admin.schedules.*')">
+                    {{ __('Schedules') }}
+                </x-responsive-nav-link>
+            @endrole
         </div>
 
         <!-- Responsive Settings Options -->
