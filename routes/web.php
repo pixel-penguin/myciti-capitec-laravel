@@ -16,6 +16,11 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
+    $user = request()->user();
+    if ($user && $user->hasAnyRole(['capitec_admin', 'city_reporter'])) {
+        return redirect()->route('admin.dashboard');
+    }
+
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
