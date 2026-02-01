@@ -95,9 +95,12 @@ class RegistrationController extends Controller
             ]
         );
 
+        $token = $user->createToken('mobile')->plainTextToken;
+
         return response()->json([
             'status' => 'verified',
             'user_id' => $user->id,
+            'token' => $token,
         ]);
     }
 }

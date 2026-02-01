@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\TrackingFeedController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tickets/issue', [TicketController::class, 'issue']);
 });
 
