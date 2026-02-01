@@ -73,7 +73,7 @@ class AccessRequestController extends Controller
         return redirect()->route('admin.access-requests.index')->with('status', 'Request declined.');
     }
 
-    private function audit(Request $request, string $action, int $targetId, array $metadata = null): void
+    private function audit(Request $request, string $action, int $targetId, ?array $metadata = null): void
     {
         AdminAuditLog::create([
             'actor_id' => $request->user()->id,

@@ -19,6 +19,11 @@ class ScheduleController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return view('admin.schedules.create');
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -38,6 +43,13 @@ class ScheduleController extends Controller
         return redirect()
             ->route('admin.schedules.index')
             ->with('status', 'Schedule created.');
+    }
+
+    public function edit(Schedule $schedule)
+    {
+        return view('admin.schedules.edit', [
+            'schedule' => $schedule,
+        ]);
     }
 
     public function update(Request $request, Schedule $schedule)

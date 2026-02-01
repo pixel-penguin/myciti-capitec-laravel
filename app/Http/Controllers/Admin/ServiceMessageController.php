@@ -20,6 +20,11 @@ class ServiceMessageController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return view('admin.service-messages.create');
+    }
+
     public function store(Request $request)
     {
         $request->merge([
@@ -52,6 +57,13 @@ class ServiceMessageController extends Controller
         return redirect()
             ->route('admin.service-messages.index')
             ->with('status', 'Service message created.');
+    }
+
+    public function edit(ServiceMessage $serviceMessage)
+    {
+        return view('admin.service-messages.edit', [
+            'message' => $serviceMessage,
+        ]);
     }
 
     public function update(Request $request, ServiceMessage $serviceMessage)

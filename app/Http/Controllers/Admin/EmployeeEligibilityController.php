@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminAuditLog;
 use App\Models\EmployeeEligibility;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class EmployeeEligibilityController extends Controller
 {
@@ -18,6 +19,11 @@ class EmployeeEligibilityController extends Controller
         return view('admin.eligibility.index', [
             'employees' => $employees,
         ]);
+    }
+
+    public function create()
+    {
+        return view('admin.eligibility.create');
     }
 
     public function store(Request $request)
@@ -48,6 +54,41 @@ class EmployeeEligibilityController extends Controller
         return redirect()
             ->route('admin.eligibility.index')
             ->with('status', 'Employee eligibility saved.');
+    }
+
+    public function edit(EmployeeEligibility $employee)
+    {
+        return view('admin.eligibility.edit', [
+            'employee' => $employee,
+        ]);
+    }
+
+    public function update(Request $request, EmployeeEligibility $employee)
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', Rule::unique('employee_eligibilities', 'email')->ignore($employee->id)],
+            'first_name' => ['nullable', 'string', 'max:100'],
+            'last_name' => ['nullable', 'string', 'max:100'],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'status' => ['required', 'in:active,suspended,left_company'],
+        ]);
+
+        $employee->update([
+            'email' => $data['email'],
+            'first_name' => $data['first_name'] ?? null,
+            'last_name' => $data['last_name'] ?? null,
+            'phone' => $data['phone'] ?? null,
+            'status' => $data['status'],
+            'updated_by' => $request->user()->id,
+        ]);
+
+        $this->audit($request, 'eligibility.update', $employee->id, [
+            'status' => $data['status'],
+        ]);
+
+        return redirect()
+            ->route('admin.eligibility.index')
+            ->with('status', 'Employee updated.');
     }
 
     public function upload(Request $request)
@@ -170,7 +211,7 @@ class EmployeeEligibilityController extends Controller
         return $payload;
     }
 
-    private function audit(Request $request, string $action, ?int $targetId, array $metadata = null): void
+    private function audit(Request $request, string $action, ?int $targetId, ?array $metadata = null): void
     {
         AdminAuditLog::create([
             'actor_id' => $request->user()->id,

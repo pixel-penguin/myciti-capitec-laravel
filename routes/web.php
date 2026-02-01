@@ -49,8 +49,11 @@ Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->
     Route::delete('/admin/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/admin/eligibility', [EmployeeEligibilityController::class, 'index'])->name('admin.eligibility.index');
+    Route::get('/admin/eligibility/create', [EmployeeEligibilityController::class, 'create'])->name('admin.eligibility.create');
     Route::post('/admin/eligibility', [EmployeeEligibilityController::class, 'store'])->name('admin.eligibility.store');
     Route::post('/admin/eligibility/upload', [EmployeeEligibilityController::class, 'upload'])->name('admin.eligibility.upload');
+    Route::get('/admin/eligibility/{employee}/edit', [EmployeeEligibilityController::class, 'edit'])->name('admin.eligibility.edit');
+    Route::patch('/admin/eligibility/{employee}', [EmployeeEligibilityController::class, 'update'])->name('admin.eligibility.update');
     Route::patch('/admin/eligibility/{employee}/status', [EmployeeEligibilityController::class, 'updateStatus'])->name('admin.eligibility.update-status');
 
     Route::get('/admin/access-requests', [AdminAccessRequestController::class, 'index'])->name('admin.access-requests.index');
@@ -58,11 +61,15 @@ Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->
     Route::patch('/admin/access-requests/{accessRequest}/decline', [AdminAccessRequestController::class, 'decline'])->name('admin.access-requests.decline');
 
     Route::get('/admin/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
+    Route::get('/admin/schedules/create', [ScheduleController::class, 'create'])->name('admin.schedules.create');
     Route::post('/admin/schedules', [ScheduleController::class, 'store'])->name('admin.schedules.store');
+    Route::get('/admin/schedules/{schedule}/edit', [ScheduleController::class, 'edit'])->name('admin.schedules.edit');
     Route::patch('/admin/schedules/{schedule}', [ScheduleController::class, 'update'])->name('admin.schedules.update');
 
     Route::get('/admin/service-messages', [ServiceMessageController::class, 'index'])->name('admin.service-messages.index');
+    Route::get('/admin/service-messages/create', [ServiceMessageController::class, 'create'])->name('admin.service-messages.create');
     Route::post('/admin/service-messages', [ServiceMessageController::class, 'store'])->name('admin.service-messages.store');
+    Route::get('/admin/service-messages/{serviceMessage}/edit', [ServiceMessageController::class, 'edit'])->name('admin.service-messages.edit');
     Route::patch('/admin/service-messages/{serviceMessage}', [ServiceMessageController::class, 'update'])->name('admin.service-messages.update');
 
     Route::get('/admin/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs.index');

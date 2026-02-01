@@ -14,34 +14,13 @@
             @endif
 
             <div class="bg-white shadow sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Upload CSV</h3>
-                <form method="POST" action="{{ route('admin.eligibility.upload') }}" enctype="multipart/form-data" class="flex flex-col md:flex-row md:items-center gap-4">
-                    @csrf
-                    <input type="file" name="file" class="block w-full" required>
-                    <button class="px-4 py-2 bg-slate-900 text-white rounded">Upload</button>
-                </form>
-                <p class="mt-2 text-sm text-slate-500">Columns: email, first_name, last_name, phone, status.</p>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold">Eligibility List</h3>
+                    <a href="{{ route('admin.eligibility.create') }}" class="px-4 py-2 bg-slate-900 text-white rounded">Add / Import</a>
+                </div>
             </div>
 
             <div class="bg-white shadow sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Add / Update Employee</h3>
-                <form method="POST" action="{{ route('admin.eligibility.store') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    @csrf
-                    <input type="email" name="email" placeholder="Email" class="border rounded px-3 py-2" required>
-                    <input type="text" name="first_name" placeholder="First name" class="border rounded px-3 py-2">
-                    <input type="text" name="last_name" placeholder="Last name" class="border rounded px-3 py-2">
-                    <input type="text" name="phone" placeholder="Phone" class="border rounded px-3 py-2">
-                    <select name="status" class="border rounded px-3 py-2">
-                        <option value="active">Active</option>
-                        <option value="suspended">Suspended</option>
-                        <option value="left_company">Left company</option>
-                    </select>
-                    <button class="md:col-span-5 px-4 py-2 bg-slate-900 text-white rounded">Save</button>
-                </form>
-            </div>
-
-            <div class="bg-white shadow sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Eligibility List</h3>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
                         <thead>
@@ -61,16 +40,7 @@
                                     <td class="py-2">{{ $employee->phone }}</td>
                                     <td class="py-2">{{ $employee->status }}</td>
                                     <td class="py-2">
-                                        <form method="POST" action="{{ route('admin.eligibility.update-status', $employee) }}" class="flex items-center gap-2">
-                                            @csrf
-                                            @method('PATCH')
-                                            <select name="status" class="border rounded px-2 py-1">
-                                                <option value="active" @selected($employee->status === 'active')>Active</option>
-                                                <option value="suspended" @selected($employee->status === 'suspended')>Suspended</option>
-                                                <option value="left_company" @selected($employee->status === 'left_company')>Left company</option>
-                                            </select>
-                                            <button class="px-3 py-1 bg-slate-800 text-white rounded">Update</button>
-                                        </form>
+                                        <a href="{{ route('admin.eligibility.edit', $employee) }}" class="px-3 py-1 bg-slate-800 text-white rounded">Edit</a>
                                     </td>
                                 </tr>
                             @endforeach
