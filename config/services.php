@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'frotcom' => [
+        'base_url' => env('FROTCOM_BASE_URL'),
+        'api_key' => env('FROTCOM_API_KEY'),
+        'username' => env('FROTCOM_USERNAME'),
+        'password' => env('FROTCOM_PASSWORD'),
+        'token_ttl' => env('FROTCOM_TOKEN_TTL', 50),
+        'vehicle_type' => env('FROTCOM_VEHICLE_TYPE', 'ZA OFFICE'),
+        'last_gps_timezone' => env('FROTCOM_LAST_GPS_TZ', 'UTC'),
+        'vehicle_map' => json_decode(env('FROTCOM_VEHICLE_MAP', '{}'), true) ?: [],
+    ],
+
 ];
