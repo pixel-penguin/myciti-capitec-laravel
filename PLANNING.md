@@ -9,7 +9,7 @@
 - [x] Tracking URL + analytics logging (placeholder view)
 
 ## To Do
-- [ ] Employee eligibility upload (CSV/Excel/manual) + status management
+- [x] Employee eligibility upload (CSV/Excel/manual) + status management
 - [ ] Access request workflow (submit/approve/decline) + notifications + audit logging
 - [ ] OTP registration flow + email verification (employee onboarding)
 - [ ] Admin UI for Capitec (eligibility, access requests, schedules)
@@ -20,4 +20,3 @@
 - [ ] Tracking feed ingestion + map data endpoint
 - [ ] 2FA for admin accounts
 - [ ] Admin action audit logging implementation
-
