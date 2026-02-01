@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmployeeEligibilityController;
 use App\Http\Controllers\Admin\AccessRequestController as AdminAccessRequestController;
+use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\TrackingController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,10 @@ Route::middleware(['auth', 'role:capitec_admin'])->group(function () {
     Route::get('/admin/access-requests', [AdminAccessRequestController::class, 'index'])->name('admin.access-requests.index');
     Route::patch('/admin/access-requests/{accessRequest}/approve', [AdminAccessRequestController::class, 'approve'])->name('admin.access-requests.approve');
     Route::patch('/admin/access-requests/{accessRequest}/decline', [AdminAccessRequestController::class, 'decline'])->name('admin.access-requests.decline');
+
+    Route::get('/admin/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
+    Route::post('/admin/schedules', [ScheduleController::class, 'store'])->name('admin.schedules.store');
+    Route::patch('/admin/schedules/{schedule}', [ScheduleController::class, 'update'])->name('admin.schedules.update');
 });
 
 Route::get('/tracking', [TrackingController::class, 'show'])->name('tracking.show');

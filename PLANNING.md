@@ -12,7 +12,7 @@
 - [x] Employee eligibility upload (CSV/Excel/manual) + status management
 - [x] Access request workflow (submit/approve/decline) + notifications + audit logging
 - [x] OTP registration flow + email verification (employee onboarding)
-- [ ] Admin UI for Capitec (eligibility, access requests, schedules)
+- [x] Admin UI for Capitec (eligibility, access requests, schedules)
 - [ ] City reporting UI (read-only, anonymized)
 - [ ] Reporting exports (CSV/PDF) + export audit
 - [ ] Validator auth (device/API key) + stricter pass/decline reasoning
