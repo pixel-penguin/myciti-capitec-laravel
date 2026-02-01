@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('employee')->index();
             $table->string('status')->default('active')->index();
             $table->string('phone')->nullable();
             $table->foreignId('employee_eligibility_id')->nullable()->constrained('employee_eligibilities')->nullOnDelete();
@@ -27,7 +26,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['employee_eligibility_id']);
-            $table->dropColumn(['role', 'status', 'phone', 'employee_eligibility_id', 'last_login_at']);
+            $table->dropColumn(['status', 'phone', 'employee_eligibility_id', 'last_login_at']);
         });
     }
 };
