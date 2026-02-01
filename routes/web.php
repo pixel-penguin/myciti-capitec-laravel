@@ -41,7 +41,12 @@ Route::middleware(['auth', 'role:capitec_admin|city_reporter', 'two_factor', 'ad
 
 Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->group(function () {
     Route::get('/admin/users', [UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/create', [UserManagementController::class, 'create'])->name('admin.users.create');
+    Route::post('/admin/users', [UserManagementController::class, 'store'])->name('admin.users.store');
+    Route::get('/admin/users/{user}/edit', [UserManagementController::class, 'edit'])->name('admin.users.edit');
+    Route::patch('/admin/users/{user}', [UserManagementController::class, 'update'])->name('admin.users.update');
     Route::patch('/admin/users/{user}/status', [UserManagementController::class, 'updateStatus'])->name('admin.users.update-status');
+    Route::delete('/admin/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/admin/eligibility', [EmployeeEligibilityController::class, 'index'])->name('admin.eligibility.index');
     Route::post('/admin/eligibility', [EmployeeEligibilityController::class, 'store'])->name('admin.eligibility.store');

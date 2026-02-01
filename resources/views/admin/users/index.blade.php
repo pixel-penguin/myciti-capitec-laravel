@@ -12,9 +12,17 @@
                     {{ session('status') }}
                 </div>
             @endif
+            @if ($errors->any())
+                <div class="rounded bg-rose-50 p-4 text-rose-700">
+                    {{ $errors->first() }}
+                </div>
+            @endif
 
             <div class="bg-white shadow sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Registered Users</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Registered Users</h3>
+                    <a href="{{ route('admin.users.create') }}" class="px-4 py-2 bg-slate-900 text-white rounded">Create User</a>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
                         <thead>
@@ -44,15 +52,23 @@
                                     <td class="py-2">{{ $user->two_factor_enabled ? 'Enabled' : 'Off' }}</td>
                                     <td class="py-2">{{ optional($user->last_login_at)->format('Y-m-d H:i') ?? '—' }}</td>
                                     <td class="py-2">
-                                        <form method="POST" action="{{ route('admin.users.update-status', $user) }}" class="flex items-center gap-2">
-                                            @csrf
-                                            @method('PATCH')
-                                            <select name="status" class="border rounded px-2 py-1">
-                                                <option value="active" @selected(($user->status ?? 'active') === 'active')>Active</option>
-                                                <option value="suspended" @selected(($user->status ?? '') === 'suspended')>Suspended</option>
-                                            </select>
-                                            <button class="px-3 py-1 bg-slate-800 text-white rounded">Update</button>
-                                        </form>
+                                        <div class="flex flex-wrap gap-2">
+                                            <a href="{{ route('admin.users.edit', $user) }}" class="px-3 py-1 bg-slate-800 text-white rounded">Edit</a>
+                                            <form method="POST" action="{{ route('admin.users.update-status', $user) }}" class="flex items-center gap-2">
+                                                @csrf
+                                                @method('PATCH')
+                                                <select name="status" class="border rounded px-2 py-1">
+                                                    <option value="active" @selected(($user->status ?? 'active') === 'active')>Active</option>
+                                                    <option value="suspended" @selected(($user->status ?? '') === 'suspended')>Suspended</option>
+                                                </select>
+                                                <button class="px-3 py-1 bg-slate-700 text-white rounded">Update</button>
+                                            </form>
+                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Delete this user?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="px-3 py-1 bg-rose-600 text-white rounded">Delete</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
