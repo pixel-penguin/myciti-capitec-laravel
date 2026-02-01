@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AccessRequestController as AdminAccessRequestCont
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\ReportingController;
 use App\Http\Controllers\Admin\ReportExportController;
+use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\TrackingController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,13 +25,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:capitec_admin|city_reporter'])->group(function () {
+Route::middleware(['auth', 'role:capitec_admin|city_reporter', 'two_factor', 'admin_audit'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/reports', [ReportingController::class, 'index'])->name('admin.reports.index');
     Route::post('/admin/reports/export', [ReportExportController::class, 'export'])->name('admin.reports.export');
 });
 
-Route::middleware(['auth', 'role:capitec_admin'])->group(function () {
+Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->group(function () {
     Route::get('/admin/eligibility', [EmployeeEligibilityController::class, 'index'])->name('admin.eligibility.index');
     Route::post('/admin/eligibility', [EmployeeEligibilityController::class, 'store'])->name('admin.eligibility.store');
     Route::post('/admin/eligibility/upload', [EmployeeEligibilityController::class, 'upload'])->name('admin.eligibility.upload');
@@ -43,6 +44,12 @@ Route::middleware(['auth', 'role:capitec_admin'])->group(function () {
     Route::get('/admin/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
     Route::post('/admin/schedules', [ScheduleController::class, 'store'])->name('admin.schedules.store');
     Route::patch('/admin/schedules/{schedule}', [ScheduleController::class, 'update'])->name('admin.schedules.update');
+});
+
+Route::middleware(['auth', 'role:capitec_admin|city_reporter'])->group(function () {
+    Route::get('/admin/two-factor', [TwoFactorController::class, 'show'])->name('admin.two-factor.challenge');
+    Route::post('/admin/two-factor/send', [TwoFactorController::class, 'send'])->name('admin.two-factor.send');
+    Route::post('/admin/two-factor/verify', [TwoFactorController::class, 'verify'])->name('admin.two-factor.verify');
 });
 
 Route::get('/tracking', [TrackingController::class, 'show'])->name('tracking.show');

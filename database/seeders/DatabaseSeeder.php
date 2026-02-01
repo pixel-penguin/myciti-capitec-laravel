@@ -5,9 +5,12 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Bus;
 use App\Models\Schedule;
+use App\Models\ValidatorDevice;
+use App\Models\TrackingDevice;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'two_factor_enabled' => true,
         ]);
 
         $user->assignRole($capitecAdmin);
@@ -38,6 +42,16 @@ class DatabaseSeeder extends Seeder
         Schedule::firstOrCreate(
             ['name' => 'evening_peak'],
             ['starts_at' => '15:00', 'ends_at' => '18:00']
+        );
+
+        ValidatorDevice::firstOrCreate(
+            ['name' => 'DEV-VALIDATOR-1'],
+            ['api_key_hash' => Hash::make('dev-validator-key'), 'active' => true]
+        );
+
+        TrackingDevice::firstOrCreate(
+            ['name' => 'DEV-TRACKER-1'],
+            ['api_key_hash' => Hash::make('dev-tracking-key'), 'active' => true]
         );
     }
 }

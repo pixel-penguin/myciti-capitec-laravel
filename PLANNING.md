@@ -15,8 +15,8 @@
 - [x] Admin UI for Capitec (eligibility, access requests, schedules)
 - [x] City reporting UI (read-only, anonymized)
 - [x] Reporting exports (CSV/PDF) + export audit
-- [ ] Validator auth (device/API key) + stricter pass/decline reasoning
-- [ ] Schedule/config management UI
-- [ ] Tracking feed ingestion + map data endpoint
-- [ ] 2FA for admin accounts
-- [ ] Admin action audit logging implementation
+- [x] Validator auth (device/API key) + stricter pass/decline reasoning
+- [x] Schedule/config management UI
+- [x] Tracking feed ingestion + map data endpoint
+- [x] 2FA for admin accounts
+- [x] Admin action audit logging implementation
