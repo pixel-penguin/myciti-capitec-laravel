@@ -28,7 +28,10 @@ class ValidationEventController extends Controller
                 'scanned_at' => $scannedAt,
                 'validator_id' => $data['validator_id'] ?? null,
                 'bus_id' => $data['bus_id'] ?? null,
-                'metadata' => ['reason' => 'ticket_not_found'],
+                'metadata' => [
+                    'reason' => 'ticket_not_found',
+                    'validator_device_id' => $request->attributes->get('validator_device_id'),
+                ],
             ]);
 
             return response()->json(['status' => 'declined', 'reason' => 'ticket_not_found'], 422);
@@ -37,7 +40,13 @@ class ValidationEventController extends Controller
         $eventType = $data['event_type'];
         $declineReason = null;
 
-        if ($ticket->status !== 'active') {
+        if ($ticket->ticket_date->toDateString() !== now()->toDateString()) {
+            $eventType = 'decline';
+            $declineReason = 'invalid_date';
+        } elseif ($eventType === 'alight' && $ticket->status !== 'used') {
+            $eventType = 'decline';
+            $declineReason = 'not_boarded';
+        } elseif ($ticket->status !== 'active') {
             $eventType = 'decline';
             $declineReason = 'already_used';
         } elseif ($ticket->expires_at->isPast()) {
@@ -53,7 +62,10 @@ class ValidationEventController extends Controller
             'event_type' => $eventType,
             'scanned_at' => $scannedAt,
             'validator_id' => $data['validator_id'] ?? null,
-            'metadata' => $declineReason ? ['reason' => $declineReason] : null,
+            'metadata' => [
+                'reason' => $declineReason,
+                'validator_device_id' => $request->attributes->get('validator_device_id'),
+            ],
         ]);
 
         if ($eventType === 'pass') {

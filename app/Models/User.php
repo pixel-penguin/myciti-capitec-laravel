@@ -26,6 +26,8 @@ class User extends Authenticatable
         'phone',
         'employee_eligibility_id',
         'last_login_at',
+        'two_factor_enabled',
+        'two_factor_confirmed_at',
     ];
 
     /**
@@ -49,6 +51,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'last_login_at' => 'datetime',
+            'two_factor_enabled' => 'boolean',
+            'two_factor_confirmed_at' => 'datetime',
         ];
     }
 
