@@ -48,6 +48,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="mt-3 text-sm text-slate-600">
+                        Pass rate: <span class="font-semibold">{{ $passRate }}%</span> · Decline rate: <span class="font-semibold">{{ $declineRate }}%</span>
+                    </div>
                 </div>
 
                 <div class="bg-white shadow sm:rounded-lg p-6">
@@ -64,6 +67,48 @@
                                 <tr class="border-t">
                                     <td class="py-2">{{ $busId }}</td>
                                     <td class="py-2">{{ $total }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white shadow sm:rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">Daily Usage (Last 14 Days)</h3>
+                    <table class="min-w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-slate-500">
+                                <th class="py-2">Date</th>
+                                <th class="py-2">Total Scans</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($dailyUsage as $row)
+                                <tr class="border-t">
+                                    <td class="py-2">{{ $row->day }}</td>
+                                    <td class="py-2">{{ $row->total }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-white shadow sm:rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">Peak Usage Times (Hourly)</h3>
+                    <table class="min-w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-slate-500">
+                                <th class="py-2">Hour</th>
+                                <th class="py-2">Total Scans</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($hourlyUsage as $row)
+                                <tr class="border-t">
+                                    <td class="py-2">{{ str_pad($row->hour, 2, '0', STR_PAD_LEFT) }}:00</td>
+                                    <td class="py-2">{{ $row->total }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

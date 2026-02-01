@@ -4,7 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmployeeEligibilityController;
 use App\Http\Controllers\Admin\AccessRequestController as AdminAccessRequestController;
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\ServiceMessageController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\ReportingController;
 use App\Http\Controllers\Admin\ReportExportController;
 use App\Http\Controllers\Admin\TwoFactorController;
@@ -37,6 +40,9 @@ Route::middleware(['auth', 'role:capitec_admin|city_reporter', 'two_factor', 'ad
 });
 
 Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->group(function () {
+    Route::get('/admin/users', [UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::patch('/admin/users/{user}/status', [UserManagementController::class, 'updateStatus'])->name('admin.users.update-status');
+
     Route::get('/admin/eligibility', [EmployeeEligibilityController::class, 'index'])->name('admin.eligibility.index');
     Route::post('/admin/eligibility', [EmployeeEligibilityController::class, 'store'])->name('admin.eligibility.store');
     Route::post('/admin/eligibility/upload', [EmployeeEligibilityController::class, 'upload'])->name('admin.eligibility.upload');
@@ -49,6 +55,12 @@ Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->
     Route::get('/admin/schedules', [ScheduleController::class, 'index'])->name('admin.schedules.index');
     Route::post('/admin/schedules', [ScheduleController::class, 'store'])->name('admin.schedules.store');
     Route::patch('/admin/schedules/{schedule}', [ScheduleController::class, 'update'])->name('admin.schedules.update');
+
+    Route::get('/admin/service-messages', [ServiceMessageController::class, 'index'])->name('admin.service-messages.index');
+    Route::post('/admin/service-messages', [ServiceMessageController::class, 'store'])->name('admin.service-messages.store');
+    Route::patch('/admin/service-messages/{serviceMessage}', [ServiceMessageController::class, 'update'])->name('admin.service-messages.update');
+
+    Route::get('/admin/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs.index');
 });
 
 Route::middleware(['auth', 'role:capitec_admin|city_reporter'])->group(function () {

@@ -35,6 +35,15 @@
                         <x-nav-link :href="route('admin.schedules.index')" :active="request()->routeIs('admin.schedules.*')">
                             {{ __('Schedules') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.service-messages.index')" :active="request()->routeIs('admin.service-messages.*')">
+                            {{ __('Service Messages') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.audit-logs.index')" :active="request()->routeIs('admin.audit-logs.*')">
+                            {{ __('Audit Logs') }}
+                        </x-nav-link>
                     @endrole
                 </div>
             </div>
@@ -110,6 +119,15 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.schedules.index')" :active="request()->routeIs('admin.schedules.*')">
                     {{ __('Schedules') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.service-messages.index')" :active="request()->routeIs('admin.service-messages.*')">
+                    {{ __('Service Messages') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.audit-logs.index')" :active="request()->routeIs('admin.audit-logs.*')">
+                    {{ __('Audit Logs') }}
                 </x-responsive-nav-link>
             @endrole
         </div>

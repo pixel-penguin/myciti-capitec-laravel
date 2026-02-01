@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\ValidationEventController;
 use App\Http\Controllers\AccessRequestController;
 use App\Http\Controllers\Api\RegistrationController;
+use App\Http\Controllers\Api\ServiceMessageController;
 use App\Http\Controllers\Api\TrackingFeedController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,4 @@ Route::post('/registration/request-otp', [RegistrationController::class, 'reques
 Route::post('/registration/verify-otp', [RegistrationController::class, 'verifyOtp'])->middleware('throttle:10,1');
 Route::post('/tracking/feed', [TrackingFeedController::class, 'store'])->middleware('tracking_auth');
 Route::get('/tracking/locations', [TrackingFeedController::class, 'latest']);
+Route::get('/service-messages/current', [ServiceMessageController::class, 'current']);
