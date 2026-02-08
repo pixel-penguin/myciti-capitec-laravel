@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\BusLocationUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\Bus;
 use App\Models\BusLocation;
@@ -34,6 +35,8 @@ class TrackingFeedController extends Controller
             'speed' => $data['speed'] ?? null,
             'recorded_at' => isset($data['recorded_at']) ? now()->parse($data['recorded_at']) : now(),
         ]);
+
+        event(new BusLocationUpdated(collect([$location])));
 
         return response()->json([
             'status' => 'ok',

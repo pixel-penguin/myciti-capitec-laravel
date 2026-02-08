@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\BusLocationUpdated;
 use App\Models\Bus;
 use App\Models\BusLocation;
 use App\Services\FrotcomClient;
@@ -77,7 +78,7 @@ class PollFrotcomTracking extends Command
             return;
         }
 
-        $created = 0;
+        $createdLocations = collect();
         $routeLen = count($this->mockRoute);
 
         foreach ($buses as $i => $bus) {
@@ -97,22 +98,21 @@ class PollFrotcomTracking extends Command
 
             $speed = mt_rand(25, 55) + (mt_rand(0, 99) / 100);
 
-            BusLocation::create([
+            $createdLocations->push(BusLocation::create([
                 'bus_id' => $bus->id,
                 'latitude' => round($lat, 7),
                 'longitude' => round($lng, 7),
                 'heading' => round($heading, 2),
                 'speed' => round($speed, 2),
                 'recorded_at' => now(),
-            ]);
-
-            $created++;
+            ]));
         }
 
         $this->mockIndex = ($this->mockIndex + 1) % $routeLen;
 
-        if ($created > 0) {
-            $this->info("Mock: stored {$created} location(s), waypoint index {$this->mockIndex}.");
+        if ($createdLocations->isNotEmpty()) {
+            event(new BusLocationUpdated($createdLocations));
+            $this->info("Mock: stored {$createdLocations->count()} location(s), waypoint index {$this->mockIndex}.");
         }
     }
 
@@ -130,7 +130,7 @@ class PollFrotcomTracking extends Command
             return;
         }
 
-        $created = 0;
+        $createdLocations = collect();
 
         foreach ($vehicles as $vehicle) {
             if (! is_array($vehicle)) {
@@ -172,20 +172,19 @@ class PollFrotcomTracking extends Command
                 continue;
             }
 
-            BusLocation::create([
+            $createdLocations->push(BusLocation::create([
                 'bus_id' => $bus->id,
                 'latitude' => $coords[0],
                 'longitude' => $coords[1],
                 'heading' => $this->numericOrNull($vehicle['heading'] ?? $vehicle['course'] ?? null),
                 'speed' => $this->numericOrNull($vehicle['speed'] ?? null),
                 'recorded_at' => $recordedAt,
-            ]);
-
-            $created++;
+            ]));
         }
 
-        if ($created > 0) {
-            $this->info("Stored {$created} bus location(s).");
+        if ($createdLocations->isNotEmpty()) {
+            event(new BusLocationUpdated($createdLocations));
+            $this->info("Stored {$createdLocations->count()} bus location(s).");
         }
     }
 
