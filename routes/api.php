@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tickets/issue', [TicketController::class, 'issue']);
+    Route::post('/registration/complete-profile', [RegistrationController::class, 'completeProfile']);
 });
 
 Route::post('/validation-events', [ValidationEventController::class, 'store'])->middleware('validator_auth');

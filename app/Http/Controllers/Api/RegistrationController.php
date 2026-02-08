@@ -50,7 +50,7 @@ class RegistrationController extends Controller
         $data = $request->validate([
             'email' => ['required', 'email'],
             'code' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:40'],
         ]);
 
@@ -70,6 +70,7 @@ class RegistrationController extends Controller
         if (! $otp || $otp->expires_at->isPast()) {
             return response()->json([
                 'status' => 'expired',
+                'message' => 'Code has expired. Please request a new one.',
             ], 422);
         }
 
@@ -78,6 +79,7 @@ class RegistrationController extends Controller
 
             return response()->json([
                 'status' => 'invalid_code',
+                'message' => 'Invalid verification code.',
             ], 422);
         }
 
@@ -86,7 +88,7 @@ class RegistrationController extends Controller
         $user = User::updateOrCreate(
             ['email' => $data['email']],
             [
-                'name' => $data['name'],
+                'name' => $data['name'] ?? $data['email'],
                 'phone' => $data['phone'] ?? null,
                 'status' => 'active',
                 'employee_eligibility_id' => $eligibility->id,
@@ -101,6 +103,29 @@ class RegistrationController extends Controller
             'status' => 'verified',
             'user_id' => $user->id,
             'token' => $token,
+        ]);
+    }
+
+    public function completeProfile(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'employee_id' => ['required', 'string', 'max:100'],
+            'department' => ['required', 'string', 'max:255'],
+        ]);
+
+        $user = $request->user();
+        $user->update(['name' => $data['name']]);
+
+        return response()->json([
+            'status' => 'complete',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'employee_id' => $data['employee_id'],
+                'department' => $data['department'],
+            ],
         ]);
     }
 }
