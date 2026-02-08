@@ -44,6 +44,7 @@ return [
         'vehicle_type' => env('FROTCOM_VEHICLE_TYPE', 'ZA OFFICE'),
         'last_gps_timezone' => env('FROTCOM_LAST_GPS_TZ', 'UTC'),
         'vehicle_map' => json_decode(env('FROTCOM_VEHICLE_MAP', '{}'), true) ?: [],
+        'mock_mode' => env('FROTCOM_MOCK_MODE', false),
     ],
 
 ];

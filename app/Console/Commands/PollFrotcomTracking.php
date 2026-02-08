@@ -15,13 +15,50 @@ class PollFrotcomTracking extends Command
 
     protected $description = 'Poll Frotcom tracking data and store active bus locations.';
 
+    // Cape Town route: Station → Century City via N1/N7
+    protected array $mockRoute = [
+        [-33.9249, 18.4241],  // Cape Town Station
+        [-33.9220, 18.4230],  // Hertzog Blvd
+        [-33.9190, 18.4260],  // Foreshore
+        [-33.9160, 18.4310],  // Civic Centre
+        [-33.9130, 18.4380],  // Nelson Mandela Blvd
+        [-33.9080, 18.4420],  // Eastern Blvd
+        [-33.9020, 18.4460],  // Woodstock area
+        [-33.8950, 18.4500],  // Salt River
+        [-33.8880, 18.4520],  // Observatory approach
+        [-33.8790, 18.4570],  // Maitland
+        [-33.8700, 18.4610],  // Ndabeni
+        [-33.8600, 18.4680],  // Pinelands approach
+        [-33.8500, 18.4750],  // Mutual
+        [-33.8400, 18.4830],  // Langa
+        [-33.8300, 18.4920],  // Valkenberg
+        [-33.8210, 18.5010],  // N1 approach
+        [-33.8140, 18.5100],  // Sable Rd
+        [-33.8070, 18.5190],  // Koeberg interchange
+        [-33.8000, 18.5280],  // Century City approach
+        [-33.8920, 18.5120],  // Ratanga area
+        [-33.8870, 18.5150],  // Canal Walk
+        [-33.8830, 18.5130],  // Century City station
+    ];
+
+    protected int $mockIndex = 0;
+
     public function handle(FrotcomClient $client): int
     {
         $sleep = max(1, (int) $this->option('sleep'));
         $once = (bool) $this->option('once');
+        $mock = (bool) config('services.frotcom.mock_mode', false);
+
+        if ($mock) {
+            $this->info('Mock mode enabled — simulating bus movement.');
+        }
 
         do {
-            $this->pollOnce($client);
+            if ($mock) {
+                $this->mockPoll();
+            } else {
+                $this->pollOnce($client);
+            }
 
             if ($once) {
                 return self::SUCCESS;
@@ -29,6 +66,54 @@ class PollFrotcomTracking extends Command
 
             sleep($sleep);
         } while (true);
+    }
+
+    protected function mockPoll(): void
+    {
+        $buses = Bus::where('active', true)->get();
+
+        if ($buses->isEmpty()) {
+            $this->warn('No active buses in database. Run db:seed first.');
+            return;
+        }
+
+        $created = 0;
+        $routeLen = count($this->mockRoute);
+
+        foreach ($buses as $i => $bus) {
+            // Each bus is offset along the route
+            $idx = ($this->mockIndex + ($i * 4)) % $routeLen;
+            [$lat, $lng] = $this->mockRoute[$idx];
+
+            // Add small random jitter for realism (±0.0003 degrees ≈ 30m)
+            $lat += (mt_rand(-30, 30) / 100000);
+            $lng += (mt_rand(-30, 30) / 100000);
+
+            // Calculate heading toward next waypoint
+            $nextIdx = ($idx + 1) % $routeLen;
+            [$nextLat, $nextLng] = $this->mockRoute[$nextIdx];
+            $heading = rad2deg(atan2($nextLng - $lng, $nextLat - $lat));
+            if ($heading < 0) $heading += 360;
+
+            $speed = mt_rand(25, 55) + (mt_rand(0, 99) / 100);
+
+            BusLocation::create([
+                'bus_id' => $bus->id,
+                'latitude' => round($lat, 7),
+                'longitude' => round($lng, 7),
+                'heading' => round($heading, 2),
+                'speed' => round($speed, 2),
+                'recorded_at' => now(),
+            ]);
+
+            $created++;
+        }
+
+        $this->mockIndex = ($this->mockIndex + 1) % $routeLen;
+
+        if ($created > 0) {
+            $this->info("Mock: stored {$created} location(s), waypoint index {$this->mockIndex}.");
+        }
     }
 
     protected function pollOnce(FrotcomClient $client): void
