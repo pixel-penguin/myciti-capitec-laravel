@@ -137,7 +137,8 @@ class PollFrotcomTracking extends Command
                 continue;
             }
 
-            if ($typeFilter !== '') {
+            // When explicit vehicle mapping is configured, track mapped IDs regardless of typeName.
+            if ($typeFilter !== '' && empty($vehicleMap)) {
                 $typeName = trim((string) ($vehicle['typeName'] ?? $vehicle['type'] ?? ''));
                 if ($typeName === '' || strcasecmp($typeName, $typeFilter) !== 0) {
                     continue;
