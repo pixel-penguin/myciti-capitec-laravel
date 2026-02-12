@@ -10,14 +10,30 @@ use Illuminate\Http\Request;
 
 class AccessRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $requests = AccessRequest::query()
-            ->orderByDesc('id')
-            ->paginate(25);
+        $tab = $request->input('tab', 'pending');
+
+        $query = AccessRequest::query()->orderByDesc('id');
+
+        if ($tab !== 'all') {
+            $query->where('status', $tab);
+        }
+
+        $requests = $query->paginate(25)->withQueryString();
+
+        $pendingCount = AccessRequest::where('status', 'pending')->count();
+        $approvedCount = AccessRequest::where('status', 'approved')->count();
+        $declinedCount = AccessRequest::where('status', 'declined')->count();
+        $allCount = AccessRequest::count();
 
         return view('admin.access-requests.index', [
             'requests' => $requests,
+            'tab' => $tab,
+            'pendingCount' => $pendingCount,
+            'approvedCount' => $approvedCount,
+            'declinedCount' => $declinedCount,
+            'allCount' => $allCount,
         ]);
     }
 
@@ -30,6 +46,8 @@ class AccessRequestController extends Controller
         $employee = EmployeeEligibility::updateOrCreate(
             ['email' => $accessRequest->email],
             [
+                'first_name' => $accessRequest->name ? explode(' ', $accessRequest->name)[0] : null,
+                'last_name' => $accessRequest->name ? (explode(' ', $accessRequest->name, 2)[1] ?? null) : null,
                 'status' => 'active',
                 'source' => 'access_request',
                 'created_by' => $request->user()->id,

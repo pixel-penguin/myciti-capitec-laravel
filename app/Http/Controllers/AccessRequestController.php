@@ -12,6 +12,9 @@ class AccessRequestController extends Controller
     {
         $data = $request->validate([
             'email' => ['required', 'email'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'employee_id' => ['nullable', 'string', 'max:100'],
+            'department' => ['nullable', 'string', 'max:255'],
             'reason' => ['nullable', 'string', 'max:500'],
         ]);
 
@@ -38,6 +41,9 @@ class AccessRequestController extends Controller
 
         $requestRow = AccessRequest::create([
             'email' => $data['email'],
+            'name' => $data['name'] ?? null,
+            'employee_id' => $data['employee_id'] ?? null,
+            'department' => $data['department'] ?? null,
             'status' => 'pending',
             'reason' => $data['reason'] ?? null,
             'requested_at' => now(),

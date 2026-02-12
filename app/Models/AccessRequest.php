@@ -8,6 +8,9 @@ class AccessRequest extends Model
 {
     protected $fillable = [
         'email',
+        'name',
+        'employee_id',
+        'department',
         'status',
         'reason',
         'requested_at',

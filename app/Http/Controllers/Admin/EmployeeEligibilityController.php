@@ -5,19 +5,53 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AdminAuditLog;
 use App\Models\EmployeeEligibility;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class EmployeeEligibilityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $employees = EmployeeEligibility::query()
-            ->orderByDesc('id')
-            ->paginate(25);
+        $query = EmployeeEligibility::query();
+
+        // Search
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('email', 'like', "%{$search}%")
+                  ->orWhere('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Status filter
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        $employees = $query->orderByDesc('id')->paginate(25)->withQueryString();
+
+        // Stats
+        $totalEligible = EmployeeEligibility::where('status', 'active')->count();
+        $registered = User::whereNotNull('employee_eligibility_id')->count();
+        $notRegistered = $totalEligible - $registered;
+        $lockedSuspended = EmployeeEligibility::whereIn('status', ['suspended', 'left_company'])->count();
+
+        // Build a map of registered employee_eligibility_ids for badge display
+        $registeredEligibilityIds = User::whereNotNull('employee_eligibility_id')
+            ->pluck('employee_eligibility_id')
+            ->flip()
+            ->all();
 
         return view('admin.eligibility.index', [
             'employees' => $employees,
+            'totalEligible' => $totalEligible,
+            'registered' => $registered,
+            'notRegistered' => max(0, $notRegistered),
+            'lockedSuspended' => $lockedSuspended,
+            'registeredEligibilityIds' => $registeredEligibilityIds,
+            'search' => $search,
+            'currentStatus' => $status,
         ]);
     }
 

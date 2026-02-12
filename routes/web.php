@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\ReportingController;
 use App\Http\Controllers\Admin\ReportExportController;
 use App\Http\Controllers\Admin\TwoFactorController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\TrackingController;
 use Illuminate\Support\Facades\Route;
 
@@ -73,6 +74,9 @@ Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->
     Route::patch('/admin/service-messages/{serviceMessage}', [ServiceMessageController::class, 'update'])->name('admin.service-messages.update');
 
     Route::get('/admin/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs.index');
+
+    Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+    Route::post('/admin/settings', [SettingsController::class, 'update'])->name('admin.settings.update');
 });
 
 Route::middleware(['auth', 'role:capitec_admin|city_reporter'])->group(function () {

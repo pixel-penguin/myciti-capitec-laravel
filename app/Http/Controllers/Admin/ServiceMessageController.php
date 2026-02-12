@@ -15,8 +15,32 @@ class ServiceMessageController extends Controller
             ->orderByDesc('id')
             ->paginate(20);
 
+        $now = now();
+        $activeCount = ServiceMessage::where('is_active', true)
+            ->where(function ($q) use ($now) {
+                $q->whereNull('starts_at')->orWhere('starts_at', '<=', $now);
+            })
+            ->where(function ($q) use ($now) {
+                $q->whereNull('ends_at')->orWhere('ends_at', '>=', $now);
+            })
+            ->count();
+
+        $scheduledCount = ServiceMessage::where('is_active', true)
+            ->where('starts_at', '>', $now)
+            ->count();
+
+        $expiredCount = ServiceMessage::where(function ($q) use ($now) {
+            $q->where('is_active', false)
+              ->orWhere(function ($q2) use ($now) {
+                  $q2->whereNotNull('ends_at')->where('ends_at', '<', $now);
+              });
+        })->count();
+
         return view('admin.service-messages.index', [
             'messages' => $messages,
+            'activeCount' => $activeCount,
+            'scheduledCount' => $scheduledCount,
+            'expiredCount' => $expiredCount,
         ]);
     }
 
