@@ -15,6 +15,10 @@ class EnsureTwoFactor
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (! config('auth.two_factor_enabled')) {
+            return $next($request);
+        }
+
         $user = $request->user();
 
         if (! $user) {
