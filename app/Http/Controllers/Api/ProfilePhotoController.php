@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfilePhotoController extends Controller
 {
@@ -14,15 +15,15 @@ class ProfilePhotoController extends Controller
         ]);
 
         $user = $request->user();
-        $filename = $user->id . '.jpg';
+        $path = 'avatars/' . $user->id . '.jpg';
 
-        $request->file('photo')->storeAs('public/avatars', $filename);
+        Storage::disk('s3')->put($path, file_get_contents($request->file('photo')->getRealPath()), 'public');
 
-        $user->update(['avatar_path' => 'avatars/' . $filename]);
+        $user->update(['avatar_path' => $path]);
 
         return response()->json([
             'status' => 'uploaded',
-            'avatar_path' => $user->avatar_path,
+            'avatar_url' => Storage::disk('s3')->url($path),
         ]);
     }
 }
