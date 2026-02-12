@@ -115,7 +115,11 @@ class RegistrationController extends Controller
         ]);
 
         $user = $request->user();
-        $user->update(['name' => $data['name']]);
+        $user->update([
+            'name' => $data['name'],
+            'employee_id' => $data['employee_id'],
+            'department' => $data['department'],
+        ]);
 
         return response()->json([
             'status' => 'complete',
@@ -123,8 +127,8 @@ class RegistrationController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'employee_id' => $data['employee_id'],
-                'department' => $data['department'],
+                'employee_id' => $user->employee_id,
+                'department' => $user->department,
             ],
         ]);
     }

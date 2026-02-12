@@ -30,6 +30,11 @@ class EmployeeEligibility extends Model
         return $this->hasMany(User::class);
     }
 
+    public function registeredUser()
+    {
+        return $this->hasOne(User::class);
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');

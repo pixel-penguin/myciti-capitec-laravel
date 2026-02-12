@@ -23,6 +23,8 @@
                             <tr class="text-left text-slate-500">
                                 <th class="py-2">Name</th>
                                 <th class="py-2">Email</th>
+                                <th class="py-2">Employee ID</th>
+                                <th class="py-2">Department</th>
                                 <th class="py-2">Roles</th>
                                 <th class="py-2">Status</th>
                                 <th class="py-2">2FA</th>
@@ -35,6 +37,8 @@
                                 <tr class="border-t">
                                     <td class="py-2">{{ $user->name }}</td>
                                     <td class="py-2">{{ $user->email }}</td>
+                                    <td class="py-2">{{ $user->employee_id ?? '—' }}</td>
+                                    <td class="py-2">{{ $user->department ?? '—' }}</td>
                                     <td class="py-2">
                                         @if ($user->roles->isEmpty())
                                             <span class="text-slate-400">—</span>
@@ -67,7 +71,7 @@
                                 </tr>
                             @empty
                                 <tr class="border-t">
-                                    <td class="py-4 text-slate-500" colspan="7">No users found.</td>
+                                    <td class="py-4 text-slate-500" colspan="9">No users found.</td>
                                 </tr>
                             @endforelse
                         </tbody>

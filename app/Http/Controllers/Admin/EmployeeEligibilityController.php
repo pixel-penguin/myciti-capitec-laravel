@@ -13,7 +13,10 @@ class EmployeeEligibilityController extends Controller
 {
     public function index(Request $request)
     {
-        $query = EmployeeEligibility::query();
+        $query = EmployeeEligibility::query()
+            ->with(['registeredUser' => function ($q) {
+                $q->select('id', 'employee_eligibility_id', 'employee_id', 'department');
+            }]);
 
         // Search
         if ($search = $request->input('search')) {
@@ -53,6 +56,19 @@ class EmployeeEligibilityController extends Controller
             'search' => $search,
             'currentStatus' => $status,
         ]);
+    }
+
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="employee_upload_template.csv"',
+        ];
+
+        $content = "email,first_name,last_name,phone,status\n";
+        $content .= "jane.doe@example.com,Jane,Doe,0821234567,active\n";
+
+        return response($content, 200, $headers);
     }
 
     public function create()

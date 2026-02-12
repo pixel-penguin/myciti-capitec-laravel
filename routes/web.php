@@ -50,6 +50,7 @@ Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->
     Route::delete('/admin/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/admin/eligibility', [EmployeeEligibilityController::class, 'index'])->name('admin.eligibility.index');
+    Route::get('/admin/eligibility/template', [EmployeeEligibilityController::class, 'downloadTemplate'])->name('admin.eligibility.template');
     Route::get('/admin/eligibility/create', [EmployeeEligibilityController::class, 'create'])->name('admin.eligibility.create');
     Route::post('/admin/eligibility', [EmployeeEligibilityController::class, 'store'])->name('admin.eligibility.store');
     Route::post('/admin/eligibility/upload', [EmployeeEligibilityController::class, 'upload'])->name('admin.eligibility.upload');

@@ -17,6 +17,7 @@ class DashboardController extends Controller
         $totalEmployees = EmployeeEligibility::where('status', 'active')->count();
         $registeredUsers = User::whereNotNull('employee_eligibility_id')->count();
         $todaysRides = ValidationEvent::whereDate('scanned_at', today())->count();
+        $monthlyRides = ValidationEvent::whereMonth('scanned_at', now()->month)->whereYear('scanned_at', now()->year)->count();
         $pendingRequests = AccessRequest::where('status', 'pending')->count();
 
         $recentActivity = AdminAuditLog::with('actor')
@@ -41,6 +42,7 @@ class DashboardController extends Controller
             'totalEmployees' => $totalEmployees,
             'registeredUsers' => $registeredUsers,
             'todaysRides' => $todaysRides,
+            'monthlyRides' => $monthlyRides,
             'pendingRequests' => $pendingRequests,
             'recentActivity' => $recentActivity,
             'todayScheduleData' => $todayScheduleData,

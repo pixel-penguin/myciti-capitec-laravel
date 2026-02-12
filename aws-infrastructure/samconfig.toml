@@ -1,0 +1,10 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "capitec-myciti-assets-stack"
+resolve_s3 = true
+s3_prefix = "capitec-myciti-assets-stack"
+region = "af-south-1"
+profile = "kwikq"
+capabilities = "CAPABILITY_NAMED_IAM"
+confirm_changeset = true

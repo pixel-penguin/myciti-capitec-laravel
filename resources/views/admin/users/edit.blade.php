@@ -20,6 +20,14 @@
                             <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="border rounded px-3 py-2 w-full">
                         </div>
                         <div>
+                            <label class="block text-sm text-slate-600 mb-1">Employee ID</label>
+                            <input type="text" value="{{ $user->employee_id ?? '—' }}" class="border rounded px-3 py-2 w-full bg-slate-50 text-slate-500" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-slate-600 mb-1">Department</label>
+                            <input type="text" value="{{ $user->department ?? '—' }}" class="border rounded px-3 py-2 w-full bg-slate-50 text-slate-500" readonly>
+                        </div>
+                        <div>
                             <label class="block text-sm text-slate-600 mb-1">Status</label>
                             <select name="status" class="border rounded px-3 py-2 w-full">
                                 <option value="active" @selected(old('status', $user->status) === 'active')>Active</option>
