@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AdminAuditLog;
 use App\Models\ServiceMessage;
+use Aws\S3\S3Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -50,6 +51,34 @@ class ServiceMessageController extends Controller
         return view('admin.service-messages.create');
     }
 
+    public function presignedUpload(Request $request)
+    {
+        $request->validate([
+            'content_type' => ['required', 'string', 'regex:/^image\//'],
+            'filename' => ['required', 'string'],
+        ]);
+
+        $extension = pathinfo($request->input('filename'), PATHINFO_EXTENSION) ?: 'jpg';
+        $key = 'notices/' . uniqid() . '.' . $extension;
+
+        /** @var S3Client $client */
+        $client = Storage::disk('s3')->getClient();
+        $bucket = config('filesystems.disks.s3.bucket');
+
+        $command = $client->getCommand('PutObject', [
+            'Bucket' => $bucket,
+            'Key' => $key,
+            'ContentType' => $request->input('content_type'),
+        ]);
+
+        $presigned = $client->createPresignedRequest($command, '+10 minutes');
+
+        return response()->json([
+            'url' => (string) $presigned->getUri(),
+            'key' => $key,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->merge([
@@ -60,22 +89,17 @@ class ServiceMessageController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:150'],
             'body' => ['nullable', 'string', 'max:2000'],
-            'image' => ['nullable', 'image', 'max:5120'],
+            'image_key' => ['nullable', 'string', 'regex:/^notices\//'],
             'level' => ['required', 'in:info,warning,alert'],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $this->uploadImage($request->file('image'));
-        }
-
         $message = ServiceMessage::create([
             'title' => $data['title'],
             'body' => $data['body'] ?? null,
-            'image_path' => $imagePath,
+            'image_path' => $data['image_key'] ?? null,
             'level' => $data['level'],
             'starts_at' => $data['starts_at'] ?? null,
             'ends_at' => $data['ends_at'] ?? null,
@@ -108,7 +132,7 @@ class ServiceMessageController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:150'],
             'body' => ['nullable', 'string', 'max:2000'],
-            'image' => ['nullable', 'image', 'max:5120'],
+            'image_key' => ['nullable', 'string', 'regex:/^notices\//'],
             'level' => ['required', 'in:info,warning,alert'],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
@@ -117,12 +141,12 @@ class ServiceMessageController extends Controller
 
         $imagePath = $serviceMessage->image_path;
 
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
+        if (! empty($data['image_key'])) {
+            // New image uploaded via presigned URL — delete old one
             if ($serviceMessage->image_path) {
                 Storage::disk('s3')->delete($serviceMessage->image_path);
             }
-            $imagePath = $this->uploadImage($request->file('image'));
+            $imagePath = $data['image_key'];
         } elseif ($request->boolean('remove_image')) {
             if ($serviceMessage->image_path) {
                 Storage::disk('s3')->delete($serviceMessage->image_path);
@@ -161,18 +185,6 @@ class ServiceMessageController extends Controller
         return redirect()
             ->route('admin.service-messages.index')
             ->with('status', 'Service message deleted.');
-    }
-
-    private function uploadImage($file): string
-    {
-        $filename = 'notices/' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-        Storage::disk('s3')->put(
-            $filename,
-            file_get_contents($file->getRealPath())
-        );
-
-        return $filename;
     }
 
     public static function imageUrl(?string $path): ?string

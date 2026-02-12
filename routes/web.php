@@ -70,6 +70,7 @@ Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->
 
     Route::get('/admin/service-messages', [ServiceMessageController::class, 'index'])->name('admin.service-messages.index');
     Route::get('/admin/service-messages/create', [ServiceMessageController::class, 'create'])->name('admin.service-messages.create');
+    Route::post('/admin/service-messages/presigned-upload', [ServiceMessageController::class, 'presignedUpload'])->name('admin.service-messages.presigned-upload');
     Route::post('/admin/service-messages', [ServiceMessageController::class, 'store'])->name('admin.service-messages.store');
     Route::get('/admin/service-messages/{serviceMessage}/edit', [ServiceMessageController::class, 'edit'])->name('admin.service-messages.edit');
     Route::patch('/admin/service-messages/{serviceMessage}', [ServiceMessageController::class, 'update'])->name('admin.service-messages.update');
