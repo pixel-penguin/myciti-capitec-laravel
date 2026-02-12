@@ -11,18 +11,30 @@ class ProfilePhotoController extends Controller
 {
     public function store(Request $request)
     {
+        Log::info('ProfilePhoto::store called', [
+            'has_file' => $request->hasFile('photo'),
+            'all_files' => array_keys($request->allFiles()),
+            'content_type' => $request->header('Content-Type'),
+        ]);
+
         $request->validate([
             'photo' => ['required', 'image', 'max:5120'],
         ]);
 
         $user = $request->user();
+        $file = $request->file('photo');
         $path = 'avatars/' . $user->id . '.jpg';
+
+        Log::info('ProfilePhoto: uploading to S3', [
+            'path' => $path,
+            'file_size' => $file->getSize(),
+            'mime' => $file->getMimeType(),
+        ]);
 
         try {
             $uploaded = Storage::disk('s3')->put(
                 $path,
-                file_get_contents($request->file('photo')->getRealPath()),
-                'public'
+                file_get_contents($file->getRealPath())
             );
 
             if (! $uploaded) {
@@ -47,7 +59,16 @@ class ProfilePhotoController extends Controller
 
         return response()->json([
             'status' => 'uploaded',
-            'avatar_url' => Storage::disk('s3')->url($path),
+            'avatar_url' => self::avatarUrl($path),
         ]);
+    }
+
+    public static function avatarUrl(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        return Storage::disk('s3')->url($path);
     }
 }

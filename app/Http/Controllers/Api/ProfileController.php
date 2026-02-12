@@ -18,9 +18,7 @@ class ProfileController extends Controller
                 'email' => $user->email,
                 'employee_id' => $user->employee_id,
                 'department' => $user->department,
-                'avatar_url' => $user->avatar_path
-                    ? \Illuminate\Support\Facades\Storage::disk('s3')->url($user->avatar_path)
-                    : null,
+                'avatar_url' => ProfilePhotoController::avatarUrl($user->avatar_path),
             ],
         ]);
     }
@@ -44,9 +42,7 @@ class ProfileController extends Controller
                 'email' => $user->email,
                 'employee_id' => $user->employee_id,
                 'department' => $user->department,
-                'avatar_url' => $user->avatar_path
-                    ? \Illuminate\Support\Facades\Storage::disk('s3')->url($user->avatar_path)
-                    : null,
+                'avatar_url' => ProfilePhotoController::avatarUrl($user->avatar_path),
             ],
         ]);
     }
