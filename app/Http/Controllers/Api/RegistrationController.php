@@ -85,17 +85,28 @@ class RegistrationController extends Controller
 
         $otp->update(['consumed_at' => now()]);
 
-        $user = User::updateOrCreate(
-            ['email' => $data['email']],
-            [
+        $user = User::where('email', $data['email'])->first();
+
+        if ($user) {
+            // Existing user — only update auth fields, preserve profile data
+            $user->update([
+                'status' => 'active',
+                'employee_eligibility_id' => $eligibility->id,
+                'email_verified_at' => now(),
+                'password' => Hash::make(Str::random(32)),
+            ]);
+        } else {
+            // New user — create with defaults
+            $user = User::create([
+                'email' => $data['email'],
                 'name' => $data['name'] ?? $data['email'],
                 'phone' => $data['phone'] ?? null,
                 'status' => 'active',
                 'employee_eligibility_id' => $eligibility->id,
                 'email_verified_at' => now(),
                 'password' => Hash::make(Str::random(32)),
-            ]
-        );
+            ]);
+        }
 
         $token = $user->createToken('mobile')->plainTextToken;
 
@@ -103,6 +114,13 @@ class RegistrationController extends Controller
             'status' => 'verified',
             'user_id' => $user->id,
             'token' => $token,
+            'profile' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'employee_id' => $user->employee_id,
+                'department' => $user->department,
+                'avatar_url' => $user->avatar_path,
+            ],
         ]);
     }
 
