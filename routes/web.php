@@ -73,6 +73,7 @@ Route::middleware(['auth', 'role:capitec_admin', 'two_factor', 'admin_audit'])->
     Route::post('/admin/service-messages', [ServiceMessageController::class, 'store'])->name('admin.service-messages.store');
     Route::get('/admin/service-messages/{serviceMessage}/edit', [ServiceMessageController::class, 'edit'])->name('admin.service-messages.edit');
     Route::patch('/admin/service-messages/{serviceMessage}', [ServiceMessageController::class, 'update'])->name('admin.service-messages.update');
+    Route::delete('/admin/service-messages/{serviceMessage}', [ServiceMessageController::class, 'destroy'])->name('admin.service-messages.destroy');
 
     Route::get('/admin/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs.index');
 

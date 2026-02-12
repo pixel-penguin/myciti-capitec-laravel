@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Admin\ServiceMessageController as AdminServiceMessageController;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceMessage;
 
@@ -32,6 +33,7 @@ class ServiceMessageController extends Controller
                 'id' => $message->id,
                 'title' => $message->title,
                 'body' => $message->body,
+                'image_url' => AdminServiceMessageController::imageUrl($message->image_path),
                 'level' => $message->level,
                 'starts_at' => $message->starts_at,
                 'ends_at' => $message->ends_at,

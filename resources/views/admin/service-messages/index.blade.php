@@ -3,7 +3,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Notice Management</h1>
-            <p class="text-sm text-gray-500 mt-1">Create and manage service notices for shuttle users</p>
+            <p class="text-sm text-gray-500 mt-1">Manage public notices for Capitec employees</p>
         </div>
         <a href="{{ route('admin.service-messages.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-[#0077C8] hover:bg-[#005A9E] text-white text-sm font-medium rounded-lg transition-colors mt-3 sm:mt-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -69,28 +69,17 @@
             @endphp
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <div class="flex flex-col sm:flex-row gap-4">
-                    {{-- Level indicator --}}
-                    <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0
-                        {{ $message->level === 'alert' ? 'bg-red-100' : ($message->level === 'warning' ? 'bg-amber-100' : 'bg-blue-100') }}">
-                        @if($message->level === 'alert')
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                        @elseif($message->level === 'warning')
-                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        @else
-                            <svg class="w-6 h-6 text-[#0077C8]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        @endif
-                    </div>
+                    {{-- Image thumbnail --}}
+                    @if($message->image_path)
+                        <div class="flex-shrink-0">
+                            <img src="{{ \App\Http\Controllers\Admin\ServiceMessageController::imageUrl($message->image_path) }}" alt="{{ $message->title }}" class="w-36 h-24 object-cover rounded-lg border border-gray-200">
+                        </div>
+                    @endif
 
                     {{-- Content --}}
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-wrap items-center gap-2 mb-1">
-                            <h3 class="text-sm font-semibold text-gray-900">{{ $message->title }}</h3>
+                            <h3 class="text-base font-semibold text-gray-900">{{ $message->title }}</h3>
                             @if($isScheduled)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Scheduled</span>
                             @elseif($isActive)
@@ -98,7 +87,6 @@
                             @else
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Expired</span>
                             @endif
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 capitalize">{{ $message->level }}</span>
                         </div>
 
                         @if($message->body)
@@ -106,25 +94,36 @@
                         @endif
 
                         <div class="flex flex-wrap gap-4 text-xs text-gray-500">
-                            <span>
-                                {{ $message->starts_at?->format('M j, Y H:i') ?? 'No start date' }}
-                                &rarr;
-                                {{ $message->ends_at?->format('M j, Y H:i') ?? 'No end date' }}
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                Start: {{ $message->starts_at?->format('d/m/Y') ?? 'No start date' }}
+                            </span>
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                End: {{ $message->ends_at?->format('d/m/Y') ?? 'No end date' }}
                             </span>
                             @if($message->creator)
-                                <span>Created by {{ $message->creator->name }}</span>
+                                <span>Created by {{ $message->creator->name }} on {{ $message->created_at?->format('d/m/Y') }}</span>
                             @endif
                         </div>
                     </div>
 
                     {{-- Actions --}}
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                        <a href="{{ route('admin.service-messages.edit', $message) }}" class="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="flex items-start gap-2 flex-shrink-0">
+                        <a href="{{ route('admin.service-messages.edit', $message) }}" class="inline-flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors" title="Edit">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
-                            Edit
                         </a>
+                        <form method="POST" action="{{ route('admin.service-messages.destroy', $message) }}" onsubmit="return confirm('Are you sure you want to delete this notice?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="inline-flex items-center justify-center w-10 h-10 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors" title="Delete">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

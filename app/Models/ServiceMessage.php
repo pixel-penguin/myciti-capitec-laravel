@@ -9,6 +9,7 @@ class ServiceMessage extends Model
     protected $fillable = [
         'title',
         'body',
+        'image_path',
         'level',
         'starts_at',
         'ends_at',
