@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProfilePhotoController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\ValidationEventController;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tickets/issue', [TicketController::class, 'issue']);
     Route::post('/registration/complete-profile', [RegistrationController::class, 'completeProfile']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/photo', [ProfilePhotoController::class, 'store']);
 });
 
