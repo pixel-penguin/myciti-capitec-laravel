@@ -12,14 +12,33 @@ class BusLocationUpdated implements ShouldBroadcastNow
 
     public function __construct(Collection $locations)
     {
-        $this->locations = $locations->map(fn ($loc) => [
-            'bus_id' => $loc->bus_id,
-            'latitude' => $loc->latitude,
-            'longitude' => $loc->longitude,
-            'heading' => $loc->heading,
-            'speed' => $loc->speed,
-            'recorded_at' => $loc->recorded_at?->toIso8601String(),
-        ])->values()->all();
+        // Eager-load bus relationship if not already loaded
+        $locations->each(function ($loc) {
+            if (! $loc->relationLoaded('bus')) {
+                $loc->load('bus:id,code,name');
+            }
+        });
+
+        $this->locations = $locations->map(function ($loc) {
+            $speed = $loc->speed;
+
+            if ($speed !== null && $speed < 3) {
+                $status = 'stopped';
+            } else {
+                $status = 'moving';
+            }
+
+            return [
+                'bus_id' => $loc->bus_id,
+                'bus_name' => $loc->bus?->name ?? ('Bus '.$loc->bus_id),
+                'latitude' => $loc->latitude,
+                'longitude' => $loc->longitude,
+                'heading' => $loc->heading,
+                'speed' => $speed !== null ? round($speed, 1) : null,
+                'status' => $status,
+                'recorded_at' => $loc->recorded_at?->toIso8601String(),
+            ];
+        })->values()->all();
     }
 
     public function broadcastOn(): Channel

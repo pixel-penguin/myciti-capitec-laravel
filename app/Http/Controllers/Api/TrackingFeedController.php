@@ -48,12 +48,37 @@ class TrackingFeedController extends Controller
     {
         $latest = BusLocation::query()
             ->select('bus_locations.*')
+            ->with('bus:id,code,name')
             ->join(DB::raw('(SELECT bus_id, MAX(recorded_at) AS max_recorded_at FROM bus_locations GROUP BY bus_id) AS latest_locations'), function ($join) {
                 $join->on('bus_locations.bus_id', '=', 'latest_locations.bus_id')
                     ->on('bus_locations.recorded_at', '=', 'latest_locations.max_recorded_at');
             })
             ->get();
 
-        return response()->json($latest);
+        $buses = $latest->map(function (BusLocation $loc) {
+            $speed = $loc->speed;
+            $stale = $loc->recorded_at && $loc->recorded_at->lt(now()->subMinutes(5));
+
+            if ($stale) {
+                $status = 'offline';
+            } elseif ($speed !== null && $speed < 3) {
+                $status = 'stopped';
+            } else {
+                $status = 'moving';
+            }
+
+            return [
+                'bus_id' => $loc->bus_id,
+                'bus_name' => $loc->bus?->name ?? ('Bus '.$loc->bus_id),
+                'latitude' => $loc->latitude,
+                'longitude' => $loc->longitude,
+                'heading' => $loc->heading,
+                'speed' => $speed !== null ? round($speed, 1) : null,
+                'status' => $status,
+                'recorded_at' => $loc->recorded_at?->toIso8601String(),
+            ];
+        });
+
+        return response()->json($buses);
     }
 }
