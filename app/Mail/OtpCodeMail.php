@@ -18,7 +18,7 @@ class OtpCodeMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Your Capitec Shuttle OTP')
+        return $this->subject('Your KwikQ Shuttle OTP')
             ->view('emails.otp-code');
     }
 }
