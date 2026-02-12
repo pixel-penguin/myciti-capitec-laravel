@@ -123,6 +123,27 @@
 
             removeBtn.addEventListener('click', resetUpload);
 
+            function resizeImage(file, maxW, maxH) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let { width, height } = img;
+                        if (width > maxW || height > maxH) {
+                            const ratio = Math.min(maxW / width, maxH / height);
+                            width = Math.round(width * ratio);
+                            height = Math.round(height * ratio);
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                        const type = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+                        canvas.toBlob((blob) => resolve(blob), type, 0.9);
+                    };
+                    img.src = URL.createObjectURL(file);
+                });
+            }
+
             fileInput.addEventListener('change', async function() {
                 const file = this.files[0];
                 if (!file) return;
@@ -141,6 +162,9 @@
                 progress.classList.remove('hidden');
 
                 try {
+                    const resized = await resizeImage(file, 1920, 1920);
+                    const contentType = resized.type;
+
                     // 1. Get presigned URL
                     const res = await fetch('{{ route("admin.service-messages.presigned-upload") }}', {
                         method: 'POST',
@@ -150,7 +174,7 @@
                             'Accept': 'application/json',
                         },
                         body: JSON.stringify({
-                            content_type: file.type,
+                            content_type: contentType,
                             filename: file.name,
                         }),
                     });
@@ -162,11 +186,11 @@
 
                     const { url, key } = await res.json();
 
-                    // 2. Upload directly to S3
+                    // 2. Upload resized image directly to S3
                     const putRes = await fetch(url, {
                         method: 'PUT',
-                        headers: { 'Content-Type': file.type },
-                        body: file,
+                        headers: { 'Content-Type': contentType },
+                        body: resized,
                     });
 
                     if (!putRes.ok) {
@@ -175,7 +199,7 @@
 
                     // 3. Show preview
                     imageKeyInput.value = key;
-                    previewImg.src = URL.createObjectURL(file);
+                    previewImg.src = URL.createObjectURL(resized);
                     previewContainer.classList.remove('hidden');
                     uploadArea.classList.add('hidden');
                 } catch (err) {
