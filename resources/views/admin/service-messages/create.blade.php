@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         <div id="uploadError" class="hidden mt-2 text-sm text-red-600"></div>
-                        <p class="text-xs text-gray-400 mt-1">Recommended size: 800x400px. Max 5MB.</p>
+                        <p class="text-xs text-gray-400 mt-1">Recommended size: 800x400px. Images are automatically resized.</p>
                     </div>
 
                     <div>
@@ -150,10 +150,6 @@
 
                 if (!file.type.startsWith('image/')) {
                     showError('Please select an image file.');
-                    return;
-                }
-                if (file.size > 5 * 1024 * 1024) {
-                    showError('Image must be smaller than 5MB.');
                     return;
                 }
 
