@@ -161,7 +161,7 @@ class ServiceMessageController extends Controller
             'level' => $data['level'],
             'starts_at' => array_key_exists('starts_at', $data) ? $data['starts_at'] : $serviceMessage->starts_at,
             'ends_at' => array_key_exists('ends_at', $data) ? $data['ends_at'] : $serviceMessage->ends_at,
-            'is_active' => $request->boolean('is_active', $serviceMessage->is_active),
+            'is_active' => $request->boolean('is_active'),
             'updated_by' => $request->user()->id,
         ]);
 
