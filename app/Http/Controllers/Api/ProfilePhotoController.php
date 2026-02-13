@@ -18,7 +18,7 @@ class ProfilePhotoController extends Controller
         ]);
 
         $request->validate([
-            'photo' => ['required', 'image', 'max:5120'],
+            'photo' => ['required', 'image', 'max:10240'],
         ]);
 
         $user = $request->user();
