@@ -14,7 +14,7 @@
 
             <div class="bg-white shadow sm:rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold">Registered Users</h3>
+                    <h3 class="text-lg font-semibold">Admin Users</h3>
                     <a href="{{ route('admin.users.create') }}" class="px-4 py-2 bg-slate-900 text-white rounded">Create User</a>
                 </div>
                 <div class="overflow-x-auto">

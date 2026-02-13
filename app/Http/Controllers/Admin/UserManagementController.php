@@ -15,6 +15,7 @@ class UserManagementController extends Controller
     public function index()
     {
         $users = User::query()
+            ->role(Role::all())
             ->with('roles')
             ->orderByDesc('id')
             ->paginate(25);
