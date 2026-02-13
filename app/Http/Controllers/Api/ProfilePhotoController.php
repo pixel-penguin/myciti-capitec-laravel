@@ -23,13 +23,16 @@ class ProfilePhotoController extends Controller
 
         $user = $request->user();
         $file = $request->file('photo');
-        $path = 'avatars/' . $user->id . '.jpg';
+        $ext = $file->guessExtension() ?: 'jpg';
+        $path = 'avatars/' . $user->id . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
 
         Log::info('ProfilePhoto: uploading to S3', [
             'path' => $path,
             'file_size' => $file->getSize(),
             'mime' => $file->getMimeType(),
         ]);
+
+        $oldPath = $user->avatar_path;
 
         try {
             $uploaded = Storage::disk('s3')->put(
@@ -56,6 +59,11 @@ class ProfilePhotoController extends Controller
         }
 
         $user->update(['avatar_path' => $path]);
+
+        // Delete the old avatar after successful upload
+        if ($oldPath && $oldPath !== $path) {
+            Storage::disk('s3')->delete($oldPath);
+        }
 
         return response()->json([
             'status' => 'uploaded',
