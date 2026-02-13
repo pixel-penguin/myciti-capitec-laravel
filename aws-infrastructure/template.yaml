@@ -36,6 +36,23 @@ Resources:
         SigningBehavior: always
         SigningProtocol: sigv4
 
+  # CORS Response Headers Policy
+  CorsResponseHeadersPolicy:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: !Sub "${BucketName}-cors-policy"
+        CorsConfig:
+          AccessControlAllowCredentials: false
+          AccessControlAllowHeaders:
+            Items: ['*']
+          AccessControlAllowMethods:
+            Items: [GET, HEAD, OPTIONS]
+          AccessControlAllowOrigins:
+            Items: ['*']
+          AccessControlMaxAgeSec: 3600
+          OriginOverride: true
+
   # CloudFront Distribution
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
@@ -54,12 +71,13 @@ Resources:
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: redirect-to-https
           AllowedMethods: [GET, HEAD, OPTIONS]
-          CachedMethods: [GET, HEAD]
+          CachedMethods: [GET, HEAD, OPTIONS]
           ForwardedValues:
             QueryString: false
             Cookies:
               Forward: none
           Compress: true
+          ResponseHeadersPolicyId: !Ref CorsResponseHeadersPolicy
         PriceClass: PriceClass_200
 
   # Bucket policy allowing CloudFront to read objects
