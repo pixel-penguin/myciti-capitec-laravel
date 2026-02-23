@@ -61,6 +61,7 @@ class TicketController extends Controller
                 'ticket_id' => $existing->id,
                 'qr_token' => $existing->qr_token,
                 'expires_at' => $existing->expires_at,
+                'schedule_name' => $schedule->name,
             ]);
         }
 
@@ -78,6 +79,7 @@ class TicketController extends Controller
             'ticket_id' => $ticket->id,
             'qr_token' => $ticket->qr_token,
             'expires_at' => $ticket->expires_at,
+            'schedule_name' => $schedule->name,
         ], 201);
     }
 
