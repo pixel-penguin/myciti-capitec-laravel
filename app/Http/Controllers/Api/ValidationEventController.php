@@ -40,21 +40,23 @@ class ValidationEventController extends Controller
         $eventType = $data['event_type'];
         $declineReason = null;
 
-        if ($ticket->ticket_date->toDateString() !== now()->toDateString()) {
+        $alreadyScannedToday = ValidationEvent::where('trip_ticket_id', $ticket->id)
+            ->where('event_type', 'pass')
+            ->whereDate('scanned_at', now()->toDateString())
+            ->exists();
+
+        if ($ticket->expires_at->isPast()) {
             $eventType = 'decline';
-            $declineReason = 'invalid_date';
+            $declineReason = 'expired';
+        } elseif ($eventType === 'pass' && $alreadyScannedToday) {
+            $eventType = 'decline';
+            $declineReason = 'already_scanned_today';
         } elseif ($eventType === 'pass' && ! $this->isWithinSchedule($ticket->schedule, $scannedAt)) {
             $eventType = 'decline';
             $declineReason = 'outside_schedule';
-        } elseif ($eventType === 'alight' && $ticket->status !== 'used') {
+        } elseif ($eventType === 'alight' && ! $alreadyScannedToday) {
             $eventType = 'decline';
             $declineReason = 'not_boarded';
-        } elseif ($ticket->status !== 'active') {
-            $eventType = 'decline';
-            $declineReason = 'already_used';
-        } elseif ($ticket->expires_at->isPast()) {
-            $eventType = 'decline';
-            $declineReason = 'expired';
         }
 
         $event = ValidationEvent::create([
@@ -71,9 +73,8 @@ class ValidationEventController extends Controller
             ],
         ]);
 
-        if ($eventType === 'pass') {
-            $ticket->update(['status' => 'used']);
-        }
+        // Ticket stays active — reusable daily per schedule.
+        // The validation_events table tracks daily scans.
 
         $response = [
             'status' => $eventType === 'decline' ? 'declined' : 'ok',

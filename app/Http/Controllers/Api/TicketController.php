@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Schedule;
 use App\Models\TripTicket;
+use App\Models\ValidationEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -27,32 +28,35 @@ class TicketController extends Controller
         $ticketDate = $now->toDateString();
         $refreshSeconds = max(5, (int) config('ticketing.qr_refresh_seconds', 30));
 
-        $alreadyUsed = TripTicket::query()
-            ->where('user_id', $user->id)
-            ->where('schedule_id', $schedule->id)
-            ->where('ticket_date', $ticketDate)
-            ->where('status', 'used')
+        $alreadyScannedToday = ValidationEvent::query()
+            ->whereHas('tripTicket', function ($q) use ($user, $schedule) {
+                $q->where('user_id', $user->id)
+                  ->where('schedule_id', $schedule->id);
+            })
+            ->where('event_type', 'pass')
+            ->whereDate('scanned_at', $ticketDate)
             ->exists();
 
-        if ($alreadyUsed) {
+        if ($alreadyScannedToday) {
             return response()->json([
-                'status' => 'already_used',
-                'message' => 'Ticket already used for this schedule.',
+                'status' => 'already_scanned',
+                'message' => 'Already scanned for this schedule today.',
             ], 422);
         }
 
         $existing = TripTicket::query()
             ->where('user_id', $user->id)
             ->where('schedule_id', $schedule->id)
-            ->where('ticket_date', $ticketDate)
+            ->where('status', 'active')
             ->orderByDesc('id')
             ->first();
 
         $expiresAt = $this->resolveExpiry($schedule, $now, $refreshSeconds);
 
-        if ($existing && $existing->status === 'active') {
+        if ($existing) {
             $existing->update([
                 'qr_token' => (string) Str::uuid(),
+                'ticket_date' => $ticketDate,
                 'issued_at' => $now,
                 'expires_at' => $expiresAt,
             ]);
