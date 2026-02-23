@@ -75,10 +75,16 @@ class ValidationEventController extends Controller
             $ticket->update(['status' => 'used']);
         }
 
-        return response()->json([
+        $response = [
             'status' => $eventType === 'decline' ? 'declined' : 'ok',
             'event_id' => $event->id,
-        ]);
+        ];
+
+        if ($declineReason) {
+            $response['reason'] = $declineReason;
+        }
+
+        return response()->json($response);
     }
 
     private function isWithinSchedule(?\App\Models\Schedule $schedule, \Carbon\Carbon $timestamp): bool
